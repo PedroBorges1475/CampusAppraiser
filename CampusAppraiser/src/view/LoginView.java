@@ -59,12 +59,12 @@ public class LoginView extends JFrame {
 		contentPane.setLayout(null);
 		
 		usuarioField = new JTextField();
-		usuarioField.setBounds(116, 64, 180, 20);
+		usuarioField.setBounds(116, 136, 180, 20);
 		contentPane.add(usuarioField);
 		usuarioField.setColumns(10);
 		
 		JButton btnLogin = new JButton("Login");
-		btnLogin.setBounds(161, 189, 89, 23);
+		btnLogin.setBounds(163, 237, 89, 23);
 		btnLogin.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				try {
@@ -106,20 +106,20 @@ public class LoginView extends JFrame {
 		contentPane.add(btnLogin);
 		
 		JLabel lblLogin = new JLabel("Usuário");
-		lblLogin.setBounds(116, 39, 46, 14);
+		lblLogin.setBounds(116, 111, 46, 14);
 		contentPane.add(lblLogin);
 		
 		JLabel lblSenha = new JLabel("Senha");
-		lblSenha.setBounds(116, 109, 46, 14);
+		lblSenha.setBounds(116, 167, 46, 14);
 		contentPane.add(lblSenha);
 		
 		passwordField = new JPasswordField();
-		passwordField.setBounds(116, 136, 180, 20);
+		passwordField.setBounds(116, 192, 180, 20);
 		contentPane.add(passwordField);
 		
 		JLabel lblimg = new JLabel("");
 		lblimg.setIcon(new ImageIcon(LoginView.class.getResource("/logo.png")));
-		lblimg.setBounds(10, 41, 98, 126);
+		lblimg.setBounds(10, 11, 424, 89);
 		contentPane.add(lblimg);
 	}
 }
