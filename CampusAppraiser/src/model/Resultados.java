@@ -8,6 +8,10 @@ public class Resultados {
 	
 	private static ArrayList<Avaliacao> lista = new ArrayList<Avaliacao>();
 	
+	public Resultados(ArrayList<Avaliacao> lista) {
+		Resultados.lista = lista;
+	}
+	
 	public static int getNumVotos() {
 		return numVotos;
 	}

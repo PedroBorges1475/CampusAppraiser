@@ -2,13 +2,35 @@ package view;
 
 import java.awt.BorderLayout;
 import java.awt.EventQueue;
+import java.awt.Font;
+import java.awt.Toolkit;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.util.ArrayList;
+import java.util.StringTokenizer;
 
+import javax.swing.JButton;
+import javax.swing.JComboBox;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
+
+import controller.Main;
+import model.Avaliacao;
+import model.Resultados;
+import model.Servico;
+import model.TipoServico;
+
 import javax.swing.JMenuBar;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
 
 public class AdminView extends JFrame {
 
@@ -37,44 +59,288 @@ public class AdminView extends JFrame {
 		setTitle("Painel de Administrador - Campus Appraiser");
 		setResizable(false);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		setIconImage(Toolkit.getDefaultToolkit().getImage(LoginView.class.getResource("/icone.png")));
 		setBounds(100, 100, 450, 300);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
-		contentPane.setLayout(new BorderLayout(0, 0));
 		setContentPane(contentPane);
+		contentPane.setLayout(null);
+		
+		JLabel lblEnquetesAbertas = new JLabel("Enquetes abertas:");
+		lblEnquetesAbertas.setBounds(10, 0, 143, 42);
+		lblEnquetesAbertas.setFont(new Font("Impact", Font.PLAIN, 20));
+		contentPane.add(lblEnquetesAbertas);
+		
+		JComboBox<String> comboBox = new JComboBox<String>();
+		comboBox.setBounds(157, 11, 267, 24);
+		contentPane.add(comboBox);
+		
+		JButton btnVotar = new JButton("Votar");
+		btnVotar.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				String nomeServico = "",tipoServico = "";
+		        StringTokenizer tokenizer = new StringTokenizer(comboBox.getSelectedItem().toString()," - ");
+		        while(tokenizer.hasMoreTokens())
+		        {
+		        	nomeServico = tokenizer.nextToken();
+		            tipoServico = tokenizer.nextToken();
+		        }
+				Main.flagVoto = true;
+		        Main.callAdminFrame(nomeServico,tipoServico);
+		        Main.flagVoto = false;
+			}
+		});
+		btnVotar.setBounds(335, 46, 89, 23);
+		contentPane.add(btnVotar);
 		
 		JMenuBar menuBar = new JMenuBar();
 		setJMenuBar(menuBar);
 		
-		JMenu mnComponente = new JMenu("Componente");
-		menuBar.add(mnComponente);
+		JMenu mnServicos = new JMenu("Servi\u00E7os");
+		menuBar.add(mnServicos);
 		
-		JMenuItem mntmAdicionar = new JMenuItem("Adicionar");
-		mnComponente.add(mntmAdicionar);
+		JMenuItem mntmAdicionarServico = new JMenuItem("Adicionar servi\u00E7o");
+		mntmAdicionarServico.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				String nome = JOptionPane.showInputDialog(contentPane,"Nome do serviço:","Adicionar serviço",JOptionPane.INFORMATION_MESSAGE);
+				if(nome != null) {
+					ArrayList<TipoServico> lista = new ArrayList<TipoServico>();
+					Main.getListaServicos().add(new Servico(nome,lista));
+					FileWriter arq = null;
+					try {
+						arq = new FileWriter("./serv.db");
+						PrintWriter serv = new PrintWriter(arq);
+						serv.println("servico;tiposervico");
+					    ArrayList<Servico> listaServ = Main.getListaServicos();
+						listaServ.forEach((s)->{
+							for(int i=0;i<s.getListaTipoServico().size();i++) {
+								serv.println(""+s.getNome()+";"+s.getListaTipoServico().get(i));
+							}
+						});
+						serv.close();
+						arq.close();
+					} catch (IOException e1) {
+						JOptionPane.showMessageDialog(null, "Impossível adicionar serviço!", "Erro", JOptionPane.ERROR_MESSAGE);
+					}
+				}
+			}
+		});
+		mnServicos.add(mntmAdicionarServico);
 		
-		JMenuItem mntmAlterar = new JMenuItem("Alterar");
-		mnComponente.add(mntmAlterar);
+		JMenu mnEnquete = new JMenu("Enquete");
+		menuBar.add(mnEnquete);
 		
-		JMenuItem mntmExcluir = new JMenuItem("Excluir");
-		mnComponente.add(mntmExcluir);
+		JMenuItem mntmCriarEnquete = new JMenuItem("Criar enquete");
+		mntmCriarEnquete.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				ArrayList<Servico> options = Main.getListaServicos();
+				String[] opcoes = new String[Main.getListaServicos().size()];
+				int i = 0;
+				for(Servico s : options) {
+					opcoes[i] = s.getNome();
+					i++;
+				}
+				String servico = (String) JOptionPane.showInputDialog(contentPane,null,"Escolha o serviço",JOptionPane.INFORMATION_MESSAGE,null, opcoes,opcoes[0]);
+				if(servico != null) 
+				{
+					String nome = JOptionPane.showInputDialog(contentPane,"Nome do tipo de serviço:","Criar tipo de serviço",JOptionPane.INFORMATION_MESSAGE);
+					if(nome != null) {
+						Servico pesquisaservico = Main.procuraListaServicos(servico);
+						pesquisaservico.getListaTipoServico().add(new TipoServico(nome));
+						JOptionPane.showMessageDialog(null, "Criado com sucesso!","Criar enquete", JOptionPane.INFORMATION_MESSAGE);
+					}
+				}
+				String enquete = "";
+				for(Servico s : Main.getListaServicos()) {
+					for(i=0;i<s.getListaTipoServico().size();i++) {
+						enquete = s.getNome().concat(" - " + s.getListaTipoServico().get(i).getNomeTipoServico());
+						comboBox.addItem(enquete);
+					}
+				}
+			}
+		});
+		mnEnquete.add(mntmCriarEnquete);
 		
-		JMenu mnUsuario = new JMenu("Usu\u00E1rio");
-		menuBar.add(mnUsuario);
+		JMenuItem mntmAlterarComponente = new JMenuItem("Alterar componente");
+		mntmAlterarComponente.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				String[] opcoes = new String[]{"Serviço","Tipo de serviço"}; 
+				String componente = (String) JOptionPane.showInputDialog(contentPane,null,"Escolha o componente que deseja alterar",JOptionPane.INFORMATION_MESSAGE,null, opcoes,opcoes[0]);
+				if(componente.equals("Serviço")) {
+					ArrayList<Servico> options = Main.getListaServicos();
+					String[] op = new String[Main.getListaServicos().size()];
+					int i = 0;
+					for(Servico s : options) {
+						op[i] = s.getNome();
+						i++;
+					}
+					String servico = (String) JOptionPane.showInputDialog(contentPane,null,"Escolha o serviço",JOptionPane.INFORMATION_MESSAGE,null, op,op[0]);
+					String nome = JOptionPane.showInputDialog(contentPane,"Nome do serviço:","Alterar componente",JOptionPane.INFORMATION_MESSAGE);
+					Main.procuraListaServicos(servico).setNome(nome);
+					String enquete = "";
+					for(Servico s : Main.getListaServicos()) {
+						for(i=0;i<s.getListaTipoServico().size();i++) {
+							enquete = s.getNome().concat(" - " + s.getListaTipoServico().get(i).getNomeTipoServico());
+							comboBox.addItem(enquete);
+						}
+					}
+				}
+				else if(componente.equals("Tipo de serviço")) {
+					ArrayList<Servico> options = Main.getListaServicos();
+					String[] op = new String[Main.getListaServicos().size()];
+					int i = 0;
+					for(Servico s : options) {
+						op[i] = s.getListaTipoServico().get(i).getNomeTipoServico();
+						i++;
+					}
+					String servico = (String) JOptionPane.showInputDialog(contentPane,null,"Escolha o serviço",JOptionPane.INFORMATION_MESSAGE,null, op,op[0]);
+					if(servico != null) 
+					{
+						String tiposervico = (String) JOptionPane.showInputDialog(contentPane,null,"Escolha o tipo de serviço",JOptionPane.INFORMATION_MESSAGE,null, op,op[0]);
+						String nome = JOptionPane.showInputDialog(contentPane,"Nome do tipo de serviço:","Alterar componente",JOptionPane.INFORMATION_MESSAGE);
+						Main.procuraListaServicos(servico).procuraListaTipoServico(tiposervico).setNomeTipoServico(nome);
+					}
+					String enquete = "";
+					for(Servico s : Main.getListaServicos()) {
+						for(i=0;i<s.getListaTipoServico().size();i++) {
+							enquete = s.getNome().concat(" - " + s.getListaTipoServico().get(i).getNomeTipoServico());
+							comboBox.addItem(enquete);
+						}
+					}
+				}
+			}
+		});
+		mnEnquete.add(mntmAlterarComponente);
 		
-		JMenuItem mntmAdicionarUsuario = new JMenuItem("Adicionar");
-		mnUsuario.add(mntmAdicionarUsuario);
-		
-		JMenuItem mntmExcluirUsuario = new JMenuItem("Excluir");
-		mnUsuario.add(mntmExcluirUsuario);
+		JMenuItem mntmExcluirComponente = new JMenuItem("Excluir componente");
+		mntmExcluirComponente.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				String[] opcoes = new String[]{"Serviço","Tipo de serviço"}; 
+				String componente = (String) JOptionPane.showInputDialog(contentPane,null,"Escolha o componente que deseja alterar",JOptionPane.INFORMATION_MESSAGE,null, opcoes,opcoes[0]);
+				if(componente.equals("Serviço")) {
+					ArrayList<Servico> options = Main.getListaServicos();
+					String[] op = new String[Main.getListaServicos().size()];
+					int i = 0;
+					for(Servico s : options) {
+						op[i] = s.getNome();
+						i++;
+					}
+					String servico = (String) JOptionPane.showInputDialog(contentPane,null,"Escolha o serviço",JOptionPane.INFORMATION_MESSAGE,null, op,op[0]);
+					Main.getListaServicos().remove(Main.procuraListaServicos(servico));
+					String enquete = "";
+					for(Servico s : Main.getListaServicos()) {
+						for(i=0;i<s.getListaTipoServico().size();i++) {
+							enquete = s.getNome().concat(" - " + s.getListaTipoServico().get(i).getNomeTipoServico());
+							comboBox.addItem(enquete);
+						}
+					}
+				}
+				else if(componente.equals("Tipo de serviço")) {
+					ArrayList<Servico> options = Main.getListaServicos();
+					String[] op = new String[Main.getListaServicos().size()];
+					int i = 0;
+					for(Servico s : options) {
+						op[i] = s.getListaTipoServico().get(i).getNomeTipoServico();
+						i++;
+					}
+					String servico = (String) JOptionPane.showInputDialog(contentPane,null,"Escolha o serviço",JOptionPane.INFORMATION_MESSAGE,null, op,op[0]);
+					if(servico != null) 
+					{
+						String tiposervico = (String) JOptionPane.showInputDialog(contentPane,null,"Escolha o tipo de serviço",JOptionPane.INFORMATION_MESSAGE,null, op,op[0]);
+//						Main.getListaServicos().remove(Main.procuraListaServicos(servico).procuraListaTipoServico(tiposervico));
+					}
+					String enquete = "";
+					for(Servico s : Main.getListaServicos()) {
+						for(i=0;i<s.getListaTipoServico().size();i++) {
+							enquete = s.getNome().concat(" - " + s.getListaTipoServico().get(i).getNomeTipoServico());
+							comboBox.addItem(enquete);
+						}
+					}
+				}
+			}
+		});
+		mnEnquete.add(mntmExcluirComponente);
 		
 		JMenu mnRelatorio = new JMenu("Relat\u00F3rio");
 		menuBar.add(mnRelatorio);
 		
 		JMenuItem mntmGerar = new JMenuItem("Gerar relat\u00F3rio");
+		mntmGerar.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				
+			}
+		});
 		mnRelatorio.add(mntmGerar);
 		
 		JMenuItem mntmExportar = new JMenuItem("Exportar relat\u00F3rio");
+		mntmExportar.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				FileWriter arq = null;
+				try {
+					arq = new FileWriter("./relatorio.csv");
+					PrintWriter relatorio = new PrintWriter(arq);
+					relatorio.println("servico;tiposervico;nota;opiniao");
+				    ArrayList<Avaliacao> lista = Resultados.getResultado();
+					lista.forEach((avaliacao)->{
+						relatorio.println(""+avaliacao.getServico()+";"+avaliacao.getTipoServico()+";"+avaliacao.getNota()+";"+avaliacao.getOpiniao());
+					});
+					relatorio.close();
+					arq.close();
+				} catch (IOException e1) {
+					JOptionPane.showMessageDialog(null, "Impossível exportar relatório!", "Erro", JOptionPane.ERROR_MESSAGE);
+				}
+			}
+		});
 		mnRelatorio.add(mntmExportar);
+		
+		JMenu mnUsuario = new JMenu("Usu\u00E1rio");
+		menuBar.add(mnUsuario);
+		
+		JMenuItem mntmAdicionarUsuario = new JMenuItem("Adicionar usuário");
+		mntmAdicionarUsuario.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				String usuario = JOptionPane.showInputDialog(contentPane,"Nome de usuário:","Cadastrar usuário",JOptionPane.INFORMATION_MESSAGE);
+				String senha = JOptionPane.showInputDialog(contentPane,"Senha:","Cadastrar usuário",JOptionPane.INFORMATION_MESSAGE);
+				FileWriter arq = null;
+				try {
+					arq = new FileWriter("./user.db",true);
+					PrintWriter db = new PrintWriter(arq);
+					db.println("" + usuario + ";" + senha);
+					db.close();
+					arq.close();
+				} catch (IOException e1) {
+					JOptionPane.showMessageDialog(null, "Impossível cadastrar usuário!", "Erro", JOptionPane.ERROR_MESSAGE);
+				}
+			}
+		});
+		mnUsuario.add(mntmAdicionarUsuario);
+		
+		JMenuItem mntmRemoverUsuario = new JMenuItem("Remover usuário");
+		mntmRemoverUsuario.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				try(BufferedReader br = new BufferedReader(new FileReader("/user.db")))
+		        {
+					String pesquisa = JOptionPane.showInputDialog(contentPane,"Nome de usuário:","Remover usuário",JOptionPane.INFORMATION_MESSAGE);
+		            String lido = "";
+		            while((lido = br.readLine()) != null) {
+		            	StringTokenizer tokenizer = new StringTokenizer(lido,";");
+		            	while(tokenizer.hasMoreTokens())
+		            	{
+		            		if(pesquisa == tokenizer.nextToken()) {
+		            			int confirmacao = JOptionPane.showConfirmDialog(null,"Remover usuário",("Tem certeza de que deseja remover o usuário " + pesquisa.toUpperCase() + "?"),JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.ERROR_MESSAGE);
+		            			if(confirmacao == 0) {
+		            				//excluir
+		            			}
+		            		}
+		            	}
+		            }
+		        } catch (IOException e1) {
+		            e1.printStackTrace();
+		        }
+			}
+		});
+		mnUsuario.add(mntmRemoverUsuario);
+
 	}
 
 }

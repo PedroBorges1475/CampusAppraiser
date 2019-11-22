@@ -8,6 +8,8 @@ import java.awt.event.ActionListener;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.PrintWriter;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
@@ -37,6 +39,12 @@ public class LoginView extends JFrame {
 				try {
 					LoginView frame = new LoginView();
 					frame.setVisible(true);
+					Main.converteArquivo();
+					FileWriter arq = new FileWriter("./user.db",true);
+					PrintWriter db = new PrintWriter(arq);
+					db.println("usuario;senha");
+					db.close();
+					arq.close();
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -52,6 +60,7 @@ public class LoginView extends JFrame {
 		setTitle("Campus Appraiser");
 		setResizable(false);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		setIconImage(Toolkit.getDefaultToolkit().getImage(LoginView.class.getResource("/icone.png")));
 		setBounds(100, 100, 450, 300);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
@@ -70,29 +79,36 @@ public class LoginView extends JFrame {
 				try {
 					String user = usuarioField.getText(); 
 					String passwd = passwordField.getText();
-					File arquivo = new File("./login.txt");
+					File arquivo = new File("./user.db");
 					FileReader arq = new FileReader(arquivo);
 				    BufferedReader reader = new BufferedReader(arq);
 				    String read1 = reader.readLine();
 				    String read2 = reader.readLine();
-				    if(user.equals(read1) && passwd.equals(read2)) {			    	
-				    	JOptionPane.showMessageDialog(null, "Logado com sucesso!","", JOptionPane.INFORMATION_MESSAGE);
-				    	dispose();
-				    	Main.callAvaliadorFrame();
-				    	reader.close();
-				    	arq.close();
-				    } else if(user.equals("admin") && passwd.equals("admin")) {
-				    	JOptionPane.showMessageDialog(null, "Logado com sucesso!","", JOptionPane.INFORMATION_MESSAGE);
-				    	dispose();
-				    	Main.callAdminFrame();
-				   	} else if(user.equals("")) {
-				   		reader.close();
-				   		arq.close();
-				   		throw new Exception();				   		
-				    } else if(!user.equals(read1) || !passwd.equals(read2)) {
-				    	reader.close();
-				    	arq.close();
-				    	throw new Exception();
+				    String lido = "";
+				    while((lido = reader.readLine()) != null){
+					    if(user.equals(read1) && passwd.equals(read2)) {			    	
+					    	JOptionPane.showMessageDialog(null, "Logado com sucesso!","", JOptionPane.INFORMATION_MESSAGE);
+					    	dispose();
+					    	Main.callAvaliadorFrame(null,null);
+					    	reader.close();
+					    	arq.close();
+					    } else if(user.equals("admin") && passwd.equals("admin")) {
+					    	JOptionPane.showMessageDialog(null, "Logado com sucesso!","", JOptionPane.INFORMATION_MESSAGE);
+					    	dispose();
+					    	Main.callAdminFrame(null,null);
+					    } else if(user.equals("gerente") && passwd.equals("gay")) {
+					    	JOptionPane.showMessageDialog(null, "Logado com sucesso!","", JOptionPane.INFORMATION_MESSAGE);
+					    	dispose();
+					    	Main.callGerenteFrame();
+					   	} else if(user.equals("")) {
+					   		reader.close();
+					   		arq.close();
+					   		throw new Exception();				   		
+					    } else if(!user.equals(read1) || !passwd.equals(read2)) {
+					    	reader.close();
+					    	arq.close();
+					    	throw new Exception();
+					    }
 				    }
 				    reader.close();
 				    arq.close();
