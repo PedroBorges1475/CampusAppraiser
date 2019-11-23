@@ -6,6 +6,7 @@ import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.BufferedReader;
+import java.io.Console;
 import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
@@ -16,6 +17,7 @@ import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
 import controller.Main;
+import model.Usuario;
 
 import javax.swing.JTextField;
 import javax.swing.ImageIcon;
@@ -39,12 +41,6 @@ public class LoginView extends JFrame {
 				try {
 					LoginView frame = new LoginView();
 					frame.setVisible(true);
-					Main.converteArquivo();
-					FileWriter arq = new FileWriter("./user.db",true);
-					PrintWriter db = new PrintWriter(arq);
-					db.println("usuario;senha");
-					db.close();
-					arq.close();
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -79,44 +75,29 @@ public class LoginView extends JFrame {
 				try {
 					String user = usuarioField.getText(); 
 					String passwd = passwordField.getText();
-					File arquivo = new File("./user.db");
-					FileReader arq = new FileReader(arquivo);
-				    BufferedReader reader = new BufferedReader(arq);
-				    String read1 = reader.readLine();
-				    String read2 = reader.readLine();
-				    String lido = "";
-				    while((lido = reader.readLine()) != null){
-					    if(user.equals(read1) && passwd.equals(read2)) {			    	
-					    	JOptionPane.showMessageDialog(null, "Logado com sucesso!","", JOptionPane.INFORMATION_MESSAGE);
-					    	dispose();
-					    	Main.callAvaliadorFrame(null,null);
-					    	reader.close();
-					    	arq.close();
-					    } else if(user.equals("admin") && passwd.equals("admin")) {
-					    	JOptionPane.showMessageDialog(null, "Logado com sucesso!","", JOptionPane.INFORMATION_MESSAGE);
-					    	dispose();
-					    	Main.callAdminFrame(null,null);
-					    } else if(user.equals("gerente") && passwd.equals("gay")) {
-					    	JOptionPane.showMessageDialog(null, "Logado com sucesso!","", JOptionPane.INFORMATION_MESSAGE);
-					    	dispose();
-					    	Main.callGerenteFrame(null,null);
-					   	} else if(user.equals("")) {
-					   		reader.close();
-					   		arq.close();
-					   		throw new Exception();				   		
-					    } else if(!user.equals(read1) || !passwd.equals(read2)) {
-					    	reader.close();
-					    	arq.close();
-					    	throw new Exception();
-					    }
-				    }
-				    reader.close();
-				    arq.close();
+					for(int i=0;i<Main.getListaUsuarios().size();i++) {
+						if(user.equals(Main.getListaUsuarios().get(i).getNomeUsuario()) && passwd.equals(Main.getListaUsuarios().get(i).getSenha())) {
+							JOptionPane.showMessageDialog(null, "Logado com sucesso!","Campus Appraiser", JOptionPane.INFORMATION_MESSAGE);
+							dispose();
+							switch(Main.getListaUsuarios().get(i).getPermissao()) {
+								case "AV":
+									Main.callAvaliadorFrame(null,null);
+									break;
+								case "GER":
+									Main.callGerenteFrame(null,null);
+									break;
+								case "ADM":
+									Main.callAdminFrame(null,null);
+									break;
+							}
+						} else if(user.equals("") || passwd.equals("")) {
+				   			throw new Exception();				   		
+						}
+					}
 				}
 				catch(Exception loginerror) {
-					JOptionPane.showMessageDialog(null, "Dados incorretos!", "Erro", JOptionPane.ERROR_MESSAGE);
+					JOptionPane.showMessageDialog(null, "Dados incorretos/usuário não encontrado!", "Erro", JOptionPane.ERROR_MESSAGE);
 				}
-				
 			}
 		});
 		contentPane.add(btnLogin);

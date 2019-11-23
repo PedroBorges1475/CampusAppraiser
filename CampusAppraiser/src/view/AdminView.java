@@ -110,7 +110,6 @@ public class AdminView extends JFrame {
 					try {
 						arq = new FileWriter("./serv.db");
 						PrintWriter serv = new PrintWriter(arq);
-						serv.println("servico;tiposervico");
 					    ArrayList<Servico> listaServ = Main.getListaServicos();
 						listaServ.forEach((s)->{
 							for(int i=0;i<s.getListaTipoServico().size();i++) {

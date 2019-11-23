@@ -1,6 +1,7 @@
 package controller;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -27,6 +28,8 @@ public class Main {
 	public static boolean flagVoto = false;
 	
 	public static void main(String[] args) {
+		converteArquivo();
+		importaUsuarios();
 		loginView.setVisible(true);
 	}
 	
@@ -86,8 +89,10 @@ public class Main {
 	}
 	
 	public static void converteArquivo() {
-        try(BufferedReader br = new BufferedReader(new FileReader("/serv.db")))
-        {
+        try {
+        	File arquivo = new File("./serv.db");
+			FileReader arq = new FileReader(arquivo);
+		    BufferedReader br = new BufferedReader(arq);
             String lido = "",nomeServico = "",tipoServico = "";
             while((lido = br.readLine()) != null) {
             	StringTokenizer tokenizer = new StringTokenizer(lido,";");
@@ -102,14 +107,18 @@ public class Main {
             	Servico s = new Servico(nomeServico,arr);
             	Main.getListaServicos().add(s);
             }
+            br.close();
+            arq.close();
         } catch (IOException e) {
             e.printStackTrace();
         }
 	}
 	
 	public static void importaUsuarios() {
-		try(BufferedReader br = new BufferedReader(new FileReader("/user.db")))
-        {
+		try {
+			File arquivo = new File("./user.db");
+			FileReader arq = new FileReader(arquivo);
+		    BufferedReader br = new BufferedReader(arq);
             String lido = "",usuario = "",senha = "",permissao = "";
             while((lido = br.readLine()) != null) {
             	StringTokenizer tokenizer = new StringTokenizer(lido,";");
@@ -122,6 +131,8 @@ public class Main {
             	Usuario u = new Usuario(usuario,senha,permissao);
             	Main.getListaUsuarios().add(u);
             }
+            br.close();
+            arq.close();
         } catch (IOException e) {
             e.printStackTrace();
         }
