@@ -99,7 +99,7 @@ public class LoginView extends JFrame {
 					    } else if(user.equals("gerente") && passwd.equals("gay")) {
 					    	JOptionPane.showMessageDialog(null, "Logado com sucesso!","", JOptionPane.INFORMATION_MESSAGE);
 					    	dispose();
-					    	Main.callGerenteFrame();
+					    	Main.callGerenteFrame(null,null);
 					   	} else if(user.equals("")) {
 					   		reader.close();
 					   		arq.close();

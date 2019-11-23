@@ -8,10 +8,9 @@ import java.util.StringTokenizer;
 
 import javax.swing.JFrame;
 
-import model.Avaliacao;
-import model.Resultados;
 import model.Servico;
 import model.TipoServico;
+import model.Usuario;
 import view.AdminView;
 import view.AvaliadorView;
 import view.GerenteView;
@@ -24,6 +23,7 @@ public class Main {
 	private static AvaliadorView avaliadorView = new AvaliadorView();
 	private static GerenteView gerenteView = new GerenteView();
 	private static ArrayList<Servico> listaServicos = new ArrayList<Servico>();
+	private static ArrayList<Usuario> listaUsuarios = new ArrayList<Usuario>();
 	public static boolean flagVoto = false;
 	
 	public static void main(String[] args) {
@@ -48,7 +48,12 @@ public class Main {
 		avaliadorView.setVisible(true);
 	}
 	
-	public static void callGerenteFrame() {
+	public static void callGerenteFrame(String votarservico,String votartipo) {
+		if(flagVoto) {
+			avaliadorView.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+			avaliadorView.votarEnquete(votarservico,votartipo);
+			avaliadorView.clear();
+		}
 		gerenteView.setVisible(true);
 	}
 	
@@ -61,6 +66,20 @@ public class Main {
 			Servico servico = listaServicos.get(i);
 			if (servico.getNome() == nome){
 				return listaServicos.get(i);
+		    }
+		}
+		return null;
+	}
+	
+	public static ArrayList<Usuario> getListaUsuarios() {
+		return listaUsuarios;
+	}
+	
+	public static Usuario procuraListaUsuarios(String nome){
+		for(int i=0; i<listaUsuarios.size(); i++) {
+			Usuario u = listaUsuarios.get(i);
+			if (u.getNomeUsuario() == nome){
+				return listaUsuarios.get(i);
 		    }
 		}
 		return null;
@@ -82,6 +101,26 @@ public class Main {
             	arr.add(t);
             	Servico s = new Servico(nomeServico,arr);
             	Main.getListaServicos().add(s);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+	}
+	
+	public static void importaUsuarios() {
+		try(BufferedReader br = new BufferedReader(new FileReader("/user.db")))
+        {
+            String lido = "",usuario = "",senha = "",permissao = "";
+            while((lido = br.readLine()) != null) {
+            	StringTokenizer tokenizer = new StringTokenizer(lido,";");
+            	while(tokenizer.hasMoreTokens())
+            	{
+            	    usuario = tokenizer.nextToken();
+            	    senha = tokenizer.nextToken();
+            	    permissao = tokenizer.nextToken();
+            	}
+            	Usuario u = new Usuario(usuario,senha,permissao);
+            	Main.getListaUsuarios().add(u);
             }
         } catch (IOException e) {
             e.printStackTrace();

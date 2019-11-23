@@ -86,7 +86,7 @@ public class AdminView extends JFrame {
 		            tipoServico = tokenizer.nextToken();
 		        }
 				Main.flagVoto = true;
-		        Main.callAdminFrame(nomeServico,tipoServico);
+		        Main.callAvaliadorFrame(nomeServico,tipoServico);
 		        Main.flagVoto = false;
 			}
 		});
