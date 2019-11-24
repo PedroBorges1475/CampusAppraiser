@@ -21,7 +21,7 @@ public class Resultados {
 		numVotos++;
 	}
 	
-	public static ArrayList<Avaliacao> getResultado() {
+	public static ArrayList<Avaliacao> getListaResultados() {
 		return lista;
 	}
 

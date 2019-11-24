@@ -199,7 +199,7 @@ public class AvaliadorView extends JFrame {
 			arq = new FileWriter("./result.db",true);
 			PrintWriter db = new PrintWriter(arq);
 		    db.println("servico;tiposervico;nota;opiniao");
-		    ArrayList<Avaliacao> lista = Resultados.getResultado();
+		    ArrayList<Avaliacao> lista = Resultados.getListaResultados();
 			lista.forEach((avaliacao)->{
 				db.println(""+avaliacao.getServico()+";"+avaliacao.getTipoServico()+";"+avaliacao.getNota()+";"+avaliacao.getOpiniao());
 			});

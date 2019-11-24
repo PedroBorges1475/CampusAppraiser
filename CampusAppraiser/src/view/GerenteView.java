@@ -276,7 +276,7 @@ public class GerenteView extends JFrame {
 					arq = new FileWriter("./relatorio.csv");
 					PrintWriter relatorio = new PrintWriter(arq);
 					relatorio.println("servico;tiposervico;nota;opiniao");
-				    ArrayList<Avaliacao> lista = Resultados.getResultado();
+				    ArrayList<Avaliacao> lista = Resultados.getListaResultados();
 					lista.forEach((avaliacao)->{
 						relatorio.println(""+avaliacao.getServico()+";"+avaliacao.getTipoServico()+";"+avaliacao.getNota()+";"+avaliacao.getOpiniao());
 					});
