@@ -9,6 +9,8 @@ import java.util.StringTokenizer;
 
 import javax.swing.JFrame;
 
+import model.Avaliacao;
+import model.Resultados;
 import model.Servico;
 import model.TipoServico;
 import model.Usuario;
@@ -28,7 +30,7 @@ public class Main {
 	public static boolean flagVoto = false;
 	
 	public static void main(String[] args) {
-		converteArquivo();
+		importaServicos();
 		importaUsuarios();
 		loginView.setVisible(true);
 	}
@@ -88,7 +90,7 @@ public class Main {
 		return null;
 	}
 	
-	public static void converteArquivo() {
+	public static void importaServicos() {
         try {
         	File arquivo = new File("./serv.db");
 			FileReader arq = new FileReader(arquivo);
@@ -138,26 +140,28 @@ public class Main {
         }
 	}
 	
-//	public static void initResult() {
-//		try(BufferedReader br = new BufferedReader(new FileReader("/result.db")))
-//        {
-//            String lido = "",nomeServico = "",tipoServico = "",nota = "",txtOpiniao = "";
-//            while((lido = br.readLine()) != null) {
-//            	StringTokenizer tokenizer = new StringTokenizer(lido,";");
-//            	while(tokenizer.hasMoreTokens())
-//            	{
-//            	    nomeServico = tokenizer.nextToken();
-//            	    tipoServico = tokenizer.nextToken();
-//            	    nota = tokenizer.nextToken();
-//            	    txtOpiniao = tokenizer.nextToken();
-//            	}
-//            	Avaliacao a = new Avaliacao(nomeServico,tipoServico,nota,txtOpiniao);
-//            	ArrayList<Avaliacao> arr = new ArrayList<Avaliacao>();
-//            	arr.add(a);
-//            	Resultados r = new Resultados(arr);
-//            }
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
-//	}
+	public static void importaResultados() {
+		try {
+			File arquivo = new File("./result.db");
+			FileReader arq = new FileReader(arquivo);
+		    BufferedReader br = new BufferedReader(arq);
+            String lido = "",nomeServico = "",tipoServico = "",nota = "",txtOpiniao = "";
+            while((lido = br.readLine()) != null) {
+            	StringTokenizer tokenizer = new StringTokenizer(lido,";");
+            	while(tokenizer.hasMoreTokens())
+            	{
+            	    nomeServico = tokenizer.nextToken();
+            	    tipoServico = tokenizer.nextToken();
+            	    nota = tokenizer.nextToken();
+            	    txtOpiniao = tokenizer.nextToken();
+            	}
+            	Avaliacao a = new Avaliacao(nomeServico,tipoServico,nota,txtOpiniao);
+            	ArrayList<Avaliacao> arr = new ArrayList<Avaliacao>();
+            	arr.add(a);
+            	Resultados r = new Resultados(arr);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+	}
 }

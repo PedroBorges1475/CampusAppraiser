@@ -1,12 +1,13 @@
 package view;
 
-import java.awt.BorderLayout;
 import java.awt.EventQueue;
 import java.awt.Font;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -26,6 +27,7 @@ import model.Avaliacao;
 import model.Resultados;
 import model.Servico;
 import model.TipoServico;
+import model.Usuario;
 
 import javax.swing.JMenuBar;
 import javax.swing.JMenu;
@@ -105,17 +107,13 @@ public class AdminView extends JFrame {
 				String nome = JOptionPane.showInputDialog(contentPane,"Nome do serviço:","Adicionar serviço",JOptionPane.INFORMATION_MESSAGE);
 				if(nome != null) {
 					ArrayList<TipoServico> lista = new ArrayList<TipoServico>();
-					Main.getListaServicos().add(new Servico(nome,lista));
+					Servico s = new Servico(nome,lista);
 					FileWriter arq = null;
 					try {
-						arq = new FileWriter("./serv.db");
+						arq = new FileWriter("./serv.db",true);
 						PrintWriter serv = new PrintWriter(arq);
-					    ArrayList<Servico> listaServ = Main.getListaServicos();
-						listaServ.forEach((s)->{
-							for(int i=0;i<s.getListaTipoServico().size();i++) {
-								serv.println(""+s.getNome()+";"+s.getListaTipoServico().get(i));
-							}
-						});
+					    serv.println(""+s.getNome()+";null");
+						Main.getListaServicos().add(s);
 						serv.close();
 						arq.close();
 					} catch (IOException e1) {
@@ -146,7 +144,12 @@ public class AdminView extends JFrame {
 					if(nome != null) {
 						Servico pesquisaservico = Main.procuraListaServicos(servico);
 						pesquisaservico.getListaTipoServico().add(new TipoServico(nome));
-						JOptionPane.showMessageDialog(null, "Criado com sucesso!","Criar enquete", JOptionPane.INFORMATION_MESSAGE);
+						try {
+							appendTipoServico(nome);
+							JOptionPane.showMessageDialog(null, "Criado com sucesso!","Criar enquete", JOptionPane.INFORMATION_MESSAGE);
+						} catch (IOException e) {
+							e.printStackTrace();
+						}
 					}
 				}
 				String enquete = "";
@@ -239,15 +242,16 @@ public class AdminView extends JFrame {
 					String[] op = new String[Main.getListaServicos().size()];
 					int i = 0;
 					for(Servico s : options) {
-						op[i] = s.getListaTipoServico().get(i).getNomeTipoServico();
+						op[i] = s.getNome();
 						i++;
 					}
 					String servico = (String) JOptionPane.showInputDialog(contentPane,null,"Escolha o serviço",JOptionPane.INFORMATION_MESSAGE,null, op,op[0]);
-					if(servico != null) 
-					{
-						String tiposervico = (String) JOptionPane.showInputDialog(contentPane,null,"Escolha o tipo de serviço",JOptionPane.INFORMATION_MESSAGE,null, op,op[0]);
-//						Main.getListaServicos().remove(Main.procuraListaServicos(servico).procuraListaTipoServico(tiposervico));
+					for(Servico s : options) {
+						op[i] = s.getListaTipoServico().get(i).getNomeTipoServico();
+						i++;
 					}
+					String tiposervico = (String) JOptionPane.showInputDialog(contentPane,null,"Escolha o tipo de serviço",JOptionPane.INFORMATION_MESSAGE,null, op,op[0]);
+					Main.procuraListaServicos(servico).getListaTipoServico().remove(Main.procuraListaServicos(servico).procuraListaTipoServico(tiposervico));
 					String enquete = "";
 					for(Servico s : Main.getListaServicos()) {
 						for(i=0;i<s.getListaTipoServico().size();i++) {
@@ -300,15 +304,31 @@ public class AdminView extends JFrame {
 			public void actionPerformed(ActionEvent e) {
 				String usuario = JOptionPane.showInputDialog(contentPane,"Nome de usuário:","Cadastrar usuário",JOptionPane.INFORMATION_MESSAGE);
 				String senha = JOptionPane.showInputDialog(contentPane,"Senha:","Cadastrar usuário",JOptionPane.INFORMATION_MESSAGE);
+				String[] op = {"Avaliador","Gerente de votação","Administrador"};
+				String permissao = (String) JOptionPane.showInputDialog(contentPane,null,"Escolha o tipo de permissão",JOptionPane.INFORMATION_MESSAGE,null, op,op[0]);
 				FileWriter arq = null;
 				try {
 					arq = new FileWriter("./user.db",true);
 					PrintWriter db = new PrintWriter(arq);
-					db.println("" + usuario + ";" + senha);
-					db.close();
-					arq.close();
+					switch(permissao) {
+						case "Avaliador":
+							db.println("" + usuario + ";" + senha+ ";AV");
+							db.close();
+							arq.close();
+							break;
+						case "Gerente de votação":
+							db.println("" + usuario + ";" + senha+ ";GER");
+							db.close();
+							arq.close();
+							break;
+						case "Administrador":
+							db.println("" + usuario + ";" + senha+ ";ADM");
+							db.close();
+							arq.close();
+							break;
+					}
 				} catch (IOException e1) {
-					JOptionPane.showMessageDialog(null, "Impossível cadastrar usuário!", "Erro", JOptionPane.ERROR_MESSAGE);
+					JOptionPane.showMessageDialog(null,"Impossível cadastrar usuário!", "Erro", JOptionPane.ERROR_MESSAGE);
 				}
 			}
 		});
@@ -341,5 +361,25 @@ public class AdminView extends JFrame {
 		mnUsuario.add(mntmRemoverUsuario);
 
 	}
-
+	
+	public void appendTipoServico(String tipoadd) throws IOException {
+		File arquivo = new File("./serv.db");
+		FileReader arq = new FileReader(arquivo);
+	    BufferedReader br = new BufferedReader(arq);
+        String lido = "",servico = "",tiposervico = "";
+        while((lido = br.readLine()) != null) {
+        	StringTokenizer tokenizer = new StringTokenizer(lido,";");
+        	while(tokenizer.hasMoreTokens())
+        	{
+        	    servico = tokenizer.nextToken();
+        	    tiposervico = tokenizer.nextToken();
+        	    if(tiposervico.equals("null")) {
+        	    	tiposervico = tiposervico.replace("null",tipoadd);
+        	    	break;
+        	    }
+        	}
+        }
+        br.close();
+        arq.close();
+	}
 }
