@@ -6,6 +6,7 @@ import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
@@ -140,12 +141,12 @@ public class AdminView extends JFrame {
 				String servico = (String) JOptionPane.showInputDialog(contentPane,null,"Escolha o serviço",JOptionPane.INFORMATION_MESSAGE,null, opcoes,opcoes[0]);
 				if(servico != null) 
 				{
-					String nome = JOptionPane.showInputDialog(contentPane,"Nome do tipo de serviço:","Criar tipo de serviço",JOptionPane.INFORMATION_MESSAGE);
-					if(nome != null) {
+					String tipoServico = JOptionPane.showInputDialog(contentPane,"Nome do tipo de serviço:","Criar tipo de serviço",JOptionPane.INFORMATION_MESSAGE);
+					if(tipoServico != null) {
 						Servico pesquisaservico = Main.procuraListaServicos(servico);
-						pesquisaservico.getListaTipoServico().add(new TipoServico(nome));
+						pesquisaservico.getListaTipoServico().add(new TipoServico(tipoServico));
 						try {
-							appendTipoServico(nome);                      //REVISAAAR
+							appendTipoServico(servico,tipoServico);                      //REVISAAAR
 							JOptionPane.showMessageDialog(null, "Criado com sucesso!","Criar enquete", JOptionPane.INFORMATION_MESSAGE);
 						} catch (IOException e) {
 							e.printStackTrace();
@@ -370,7 +371,7 @@ public class AdminView extends JFrame {
 
 	}
 	
-	public void appendTipoServico(String tipoadd) throws IOException {
+	public void appendTipoServico(String servicoadd,String tipoadd) throws IOException {
 		File arquivo = new File("./serv.db");
 		FileReader arq = new FileReader(arquivo);
 	    BufferedReader br = new BufferedReader(arq);
@@ -380,10 +381,18 @@ public class AdminView extends JFrame {
         	while(tokenizer.hasMoreTokens()) {
         	    servico = tokenizer.nextToken();
         	    tiposervico = tokenizer.nextToken();
-        	    
-        	    if(tiposervico.equals("null")) {
+        	    if(servico.equals(servicoadd) && tiposervico.equals("null")) {
         	    	tiposervico = tiposervico.replace("null",tipoadd);
         	    	break;
+        	    } else if(servico.equals(servicoadd) && !tiposervico.equals("null")) {
+        	    	br.close();
+        	        arq.close();
+        			FileWriter arq1 = new FileWriter(arquivo,true);
+        		    BufferedWriter br1 = new BufferedWriter(arq1);
+        		    br1.write(servicoadd + ";" + tipoadd);
+        	        br1.close();
+        	        arq1.close();
+        	        break;
         	    }
         	}
         }

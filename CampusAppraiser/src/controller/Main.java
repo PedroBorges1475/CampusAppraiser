@@ -90,7 +90,7 @@ public class Main {
 		return null;
 	}
 	
-	public static void importaServicos() { //CORRIGIR
+	public static void importaServicos() {
         try {
         	File arquivo = new File("./serv.db");
 			FileReader arq = new FileReader(arquivo);
