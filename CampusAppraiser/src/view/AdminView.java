@@ -168,7 +168,7 @@ public class AdminView extends JFrame {
 		JMenuItem mntmAlterarComponente = new JMenuItem("Alterar componente");
 		mntmAlterarComponente.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				String[] opcoes = new String[]{"Serviço","Tipo de serviço"}; //Ta dando exception no alterar tipo de serviço, tratar quando não tiver tipo de serviço
+				String[] opcoes = new String[]{"Serviço","Tipo de serviço"};
 				String componente = (String) JOptionPane.showInputDialog(contentPane,null,"Escolha o componente que deseja alterar",JOptionPane.INFORMATION_MESSAGE,null, opcoes,opcoes[0]);
 				if(componente.equals("Serviço")) {
 					ArrayList<Servico> options = Main.getListaServicos();
@@ -180,13 +180,23 @@ public class AdminView extends JFrame {
 					}
 					String servico = (String) JOptionPane.showInputDialog(contentPane,null,"Escolha o serviço",JOptionPane.INFORMATION_MESSAGE,null, op,op[0]);
 					String nome = JOptionPane.showInputDialog(contentPane,"Nome do serviço:","Alterar componente",JOptionPane.INFORMATION_MESSAGE);
-					Main.procuraListaServicos(servico).setNome(nome);
-					String enquete = "";
-					for(Servico s : Main.getListaServicos()) {
-						for(i=0;i<s.getListaTipoServico().size();i++) {
-							enquete = s.getNome().concat(" - " + s.getListaTipoServico().get(i).getNomeTipoServico());
-							comboBox.addItem(enquete);
+					try {
+						if(!Main.getListaServicos().isEmpty()) {
+							Main.procuraListaServicos(servico).setNome(nome);
+							JOptionPane.showMessageDialog(null, "Componente alterado com sucesso!","Alterar componente", JOptionPane.INFORMATION_MESSAGE);
+							String enquete = "";
+							for(Servico s : Main.getListaServicos()) {
+								for(i=0;i<s.getListaTipoServico().size();i++) {
+									enquete = s.getNome().concat(" - " + s.getListaTipoServico().get(i).getNomeTipoServico());
+									comboBox.addItem(enquete);
+								}
+							}
 						}
+						else {
+							throw new Exception();
+						}
+					} catch (Exception e1) {
+						JOptionPane.showMessageDialog(null, "Serviço não existente/lista de serviços vazia!", "Erro", JOptionPane.ERROR_MESSAGE);
 					}
 				}
 				else if(componente.equals("Tipo de serviço")) {
@@ -194,23 +204,39 @@ public class AdminView extends JFrame {
 					String[] op = new String[Main.getListaServicos().size()];
 					int i = 0;
 					for(Servico s : options) {
-						op[i] = s.getListaTipoServico().get(i).getNomeTipoServico();
+						op[i] = s.getNome();
 						i++;
 					}
 					String servico = (String) JOptionPane.showInputDialog(contentPane,null,"Escolha o serviço",JOptionPane.INFORMATION_MESSAGE,null, op,op[0]);
-					if(servico != null) 
+					if(servico != null && !Main.procuraListaServicos(servico).getListaTipoServico().isEmpty()) 
 					{
+						i = 0;
+						for(TipoServico t : Main.procuraListaServicos(servico).getListaTipoServico()) {
+							op[i] = t.getNomeTipoServico();
+							i++;
+						}
 						String tiposervico = (String) JOptionPane.showInputDialog(contentPane,null,"Escolha o tipo de serviço",JOptionPane.INFORMATION_MESSAGE,null, op,op[0]);
 						String nome = JOptionPane.showInputDialog(contentPane,"Nome do tipo de serviço:","Alterar componente",JOptionPane.INFORMATION_MESSAGE);
-						Main.procuraListaServicos(servico).procuraListaTipoServico(tiposervico).setNomeTipoServico(nome);
-					}
-					String enquete = "";
-					for(Servico s : Main.getListaServicos()) {
-						for(i=0;i<s.getListaTipoServico().size();i++) {
-							enquete = s.getNome().concat(" - " + s.getListaTipoServico().get(i).getNomeTipoServico());
-							comboBox.addItem(enquete);
+						try {
+							if(!Main.procuraListaServicos(servico).getListaTipoServico().isEmpty()) {
+								Main.procuraListaServicos(servico).procuraListaTipoServico(tiposervico).setNomeTipoServico(nome);
+								JOptionPane.showMessageDialog(null, "Componente alterado com sucesso!","Alterar componente", JOptionPane.INFORMATION_MESSAGE);
+								String enquete = "";
+								for(Servico s : Main.getListaServicos()) {
+									for(i=0;i<s.getListaTipoServico().size();i++) {
+										enquete = s.getNome().concat(" - " + s.getListaTipoServico().get(i).getNomeTipoServico());
+										comboBox.addItem(enquete);
+									}
+								}
+							}
+							else {
+								throw new Exception();
+							}
+						} catch (Exception e1) {
+							JOptionPane.showMessageDialog(null, "Não existem tipos para este serviço/lista de tipos de serviço vazia!", "Erro", JOptionPane.ERROR_MESSAGE);
 						}
 					}
+					
 				}
 			}
 		});

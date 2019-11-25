@@ -90,10 +90,9 @@ public class LoginView extends JFrame {
 									Main.callAdminFrame(null,null);
 									break;
 							}
+							break;
 						} else if(user.equals("") || passwd.equals("")) {
-				   			throw new Exception();				   		
-						} else {
-							throw new Exception();
+				   			throw new Exception();
 						}
 					}
 				}
