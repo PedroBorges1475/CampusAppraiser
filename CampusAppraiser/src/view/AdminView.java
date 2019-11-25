@@ -154,6 +154,7 @@ public class AdminView extends JFrame {
 					}
 				}
 				String enquete = "";
+				comboBox.removeAllItems();
 				for(Servico s : Main.getListaServicos()) { //COLOCAR CONDICIONAL para limpar a lista e não repetir
 					for(i=0;i<s.getListaTipoServico().size();i++) {
 						enquete = s.getNome().concat(" - " + s.getListaTipoServico().get(i).getNomeTipoServico());
@@ -355,7 +356,7 @@ public class AdminView extends JFrame {
 		            		if(pesquisa.equals(encontrado)) {
 		            			int confirmacao = JOptionPane.showConfirmDialog(null,"Remover usuário '" + pesquisa + "'?",("Tem certeza de que deseja remover o usuário " + pesquisa.toUpperCase() + "?"),JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.ERROR_MESSAGE);
 		            			if(confirmacao == 0) {
-		            				//excluir
+		            				
 		            			}
 		            		}
 		            	}
@@ -368,7 +369,6 @@ public class AdminView extends JFrame {
 			}
 		});
 		mnUsuario.add(mntmRemoverUsuario);
-
 	}
 	
 	public void appendTipoServico(String servicoadd,String tipoadd) throws IOException {
@@ -383,10 +383,15 @@ public class AdminView extends JFrame {
         	    tiposervico = tokenizer.nextToken();
         	    if(servico.equals(servicoadd) && tiposervico.equals("null")) {
         	    	tiposervico = tiposervico.replace("null",tipoadd);
+//        	    	int i=0;
+//        	    	for(Servico s : Main.getListaServicos()) {
+//        	    		if(s.getListaTipoServico().get(i).getNomeTipoServico().equals("null")) {
+//        	    			Main.getListaServicos().remove(Main.procuraListaServicos(servicoadd));
+//        	    		}
+//        	    		i++;
+//        	    	}
         	    	break;
         	    } else if(servico.equals(servicoadd) && !tiposervico.equals("null")) {
-        	    	br.close();
-        	        arq.close();
         			FileWriter arq1 = new FileWriter(arquivo,true);
         		    BufferedWriter br1 = new BufferedWriter(arq1);
         		    br1.write(servicoadd + ";" + tipoadd);
