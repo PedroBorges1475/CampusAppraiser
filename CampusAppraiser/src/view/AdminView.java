@@ -110,13 +110,23 @@ public class AdminView extends JFrame {
 					ArrayList<TipoServico> lista = new ArrayList<TipoServico>();
 					Servico s = new Servico(nome,lista);
 					FileWriter arq = null;
+					File file = new File("./serv.db");
 					try {
-						arq = new FileWriter("./serv.db",true);
-						PrintWriter serv = new PrintWriter(arq);
-					    serv.println(""+s.getNome()+";null");
-						Main.getListaServicos().add(s);
-						serv.close();
-						arq.close();
+						if(file.exists() == false) {
+							arq = new FileWriter("./serv.db");
+							PrintWriter serv = new PrintWriter(arq);
+						    serv.println(""+s.getNome()+";null");
+							Main.getListaServicos().add(s);
+							serv.close();
+							arq.close();
+						} else {
+							arq = new FileWriter("./serv.db",true);
+							PrintWriter serv = new PrintWriter(arq);
+						    serv.println(""+s.getNome()+";null");
+							Main.getListaServicos().add(s);
+							serv.close();
+							arq.close();
+						}
 					} catch (IOException e1) {
 						JOptionPane.showMessageDialog(null, "Impossível adicionar serviço!", "Erro", JOptionPane.ERROR_MESSAGE);
 					}
@@ -430,9 +440,6 @@ public class AdminView extends JFrame {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		
-		
-		
 	}
 	
 	public void appendTipoServico(String servicoadd,String tipoadd) throws IOException {

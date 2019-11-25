@@ -32,6 +32,7 @@ public class Main {
 	public static void main(String[] args) {
 		importaServicos();
 		importaUsuarios();
+		importaResultados();
 		loginView.setVisible(true);
 	}
 	
@@ -93,34 +94,38 @@ public class Main {
 	public static void importaServicos() {
         try {
         	File arquivo = new File("./serv.db");
-			FileReader arq = new FileReader(arquivo);
-		    BufferedReader br = new BufferedReader(arq);
-            String lido = "",nomeServico = "",tipoServico = "";
-            while((lido = br.readLine()) != null) {
-            	StringTokenizer tokenizer = new StringTokenizer(lido,";");
-            	while(tokenizer.hasMoreTokens())
-            	{
-            	    nomeServico = tokenizer.nextToken();
-            	    tipoServico = tokenizer.nextToken();
-            	}
-            	TipoServico t = new TipoServico(tipoServico);
-            	boolean naoAdicionado = true;
-            	for(Servico servico:Main.getListaServicos()) {
-            		if(servico.getNome().equals(nomeServico)) {
-            			Main.procuraListaServicos(nomeServico).getListaTipoServico().add(t);
-            			naoAdicionado = false;
-            			break;
-            		}
-            	}
-            	if(naoAdicionado){
-            		ArrayList<TipoServico> arr = new ArrayList<TipoServico>();
-                	arr.add(t);
-                	Servico s = new Servico(nomeServico,arr);
-            		Main.getListaServicos().add(s);
-            	}
-            }
-            br.close();
-            arq.close();
+        	if(arquivo.exists() == true) {
+        		FileReader arq = new FileReader(arquivo);
+    		    BufferedReader br = new BufferedReader(arq);
+                String lido = "",nomeServico = "",tipoServico = "";
+                while((lido = br.readLine()) != null) {
+                	StringTokenizer tokenizer = new StringTokenizer(lido,";");
+                	while(tokenizer.hasMoreTokens())
+                	{
+                	    nomeServico = tokenizer.nextToken();
+                	    tipoServico = tokenizer.nextToken();
+                	}
+                	TipoServico t = new TipoServico(tipoServico);
+                	boolean naoAdicionado = true;
+                	for(Servico servico:Main.getListaServicos()) {
+                		if(servico.getNome().equals(nomeServico)) {
+                			Main.procuraListaServicos(nomeServico).getListaTipoServico().add(t);
+                			naoAdicionado = false;
+                			break;
+                		}
+                	}
+                	if(naoAdicionado){
+                		ArrayList<TipoServico> arr = new ArrayList<TipoServico>();
+                    	arr.add(t);
+                    	Servico s = new Servico(nomeServico,arr);
+                		Main.getListaServicos().add(s);
+                	}
+                }
+                br.close();
+                arq.close();
+        	} else {
+        		
+        	}
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -129,22 +134,26 @@ public class Main {
 	public static void importaUsuarios() {
 		try {
 			File arquivo = new File("./user.db");
-			FileReader arq = new FileReader(arquivo);
-		    BufferedReader br = new BufferedReader(arq);
-            String lido = "",usuario = "",senha = "",permissao = "";
-            while((lido = br.readLine()) != null) {
-            	StringTokenizer tokenizer = new StringTokenizer(lido,";");
-            	while(tokenizer.hasMoreTokens())
-            	{
-            	    usuario = tokenizer.nextToken();
-            	    senha = tokenizer.nextToken();
-            	    permissao = tokenizer.nextToken();
-            	}
-            	Usuario u = new Usuario(usuario,senha,permissao);
-            	Main.getListaUsuarios().add(u);
-            }
-            br.close();
-            arq.close();
+			if(arquivo.exists() == true) {
+				FileReader arq = new FileReader(arquivo);
+			    BufferedReader br = new BufferedReader(arq);
+	            String lido = "",usuario = "",senha = "",permissao = "";
+	            while((lido = br.readLine()) != null) {
+	            	StringTokenizer tokenizer = new StringTokenizer(lido,";");
+	            	while(tokenizer.hasMoreTokens())
+	            	{
+	            	    usuario = tokenizer.nextToken();
+	            	    senha = tokenizer.nextToken();
+	            	    permissao = tokenizer.nextToken();
+	            	}
+	            	Usuario u = new Usuario(usuario,senha,permissao);
+	            	Main.getListaUsuarios().add(u);
+	            }
+	            br.close();
+	            arq.close();
+			} else {
+				
+			}
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -153,23 +162,27 @@ public class Main {
 	public static void importaResultados() {
 		try {
 			File arquivo = new File("./result.db");
-			FileReader arq = new FileReader(arquivo);
-		    BufferedReader br = new BufferedReader(arq);
-            String lido = "",nomeServico = "",tipoServico = "",nota = "",txtOpiniao = "";
-            while((lido = br.readLine()) != null) {
-            	StringTokenizer tokenizer = new StringTokenizer(lido,";");
-            	while(tokenizer.hasMoreTokens())
-            	{
-            	    nomeServico = tokenizer.nextToken();
-            	    tipoServico = tokenizer.nextToken();
-            	    nota = tokenizer.nextToken();
-            	    txtOpiniao = tokenizer.nextToken();
-            	}
-            	Avaliacao a = new Avaliacao(nomeServico,tipoServico,nota,txtOpiniao);
-            	ArrayList<Avaliacao> arr = new ArrayList<Avaliacao>();
-            	arr.add(a);
-            	Resultados r = new Resultados(arr);
-            }
+			if(arquivo.exists() == true) {
+				FileReader arq = new FileReader(arquivo);
+			    BufferedReader br = new BufferedReader(arq);
+	            String lido = "",nomeServico = "",tipoServico = "",nota = "",txtOpiniao = "";
+	            while((lido = br.readLine()) != null) {
+	            	StringTokenizer tokenizer = new StringTokenizer(lido,";");
+	            	while(tokenizer.hasMoreTokens())
+	            	{
+	            	    nomeServico = tokenizer.nextToken();
+	            	    tipoServico = tokenizer.nextToken();
+	            	    nota = tokenizer.nextToken();
+	            	    txtOpiniao = tokenizer.nextToken();
+	            	}
+	            	Avaliacao a = new Avaliacao(nomeServico,tipoServico,nota,txtOpiniao);
+	            	ArrayList<Avaliacao> arr = new ArrayList<Avaliacao>();
+	            	arr.add(a);
+	            	Resultados r = new Resultados(arr);
+	            }
+			} else {
+				
+			}		
         } catch (IOException e) {
             e.printStackTrace();
         }
