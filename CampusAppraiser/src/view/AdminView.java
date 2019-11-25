@@ -127,7 +127,7 @@ public class AdminView extends JFrame {
 		JMenu mnEnquete = new JMenu("Enquete");
 		menuBar.add(mnEnquete);
 		
-		JMenuItem mntmCriarEnquete = new JMenuItem("Criar enquete");
+		JMenuItem mntmCriarEnquete = new JMenuItem("Criar enquete");     
 		mntmCriarEnquete.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				ArrayList<Servico> options = Main.getListaServicos();
@@ -145,7 +145,7 @@ public class AdminView extends JFrame {
 						Servico pesquisaservico = Main.procuraListaServicos(servico);
 						pesquisaservico.getListaTipoServico().add(new TipoServico(nome));
 						try {
-							appendTipoServico(nome);
+							appendTipoServico(nome);                      //REVISAAAR
 							JOptionPane.showMessageDialog(null, "Criado com sucesso!","Criar enquete", JOptionPane.INFORMATION_MESSAGE);
 						} catch (IOException e) {
 							e.printStackTrace();
@@ -153,7 +153,7 @@ public class AdminView extends JFrame {
 					}
 				}
 				String enquete = "";
-				for(Servico s : Main.getListaServicos()) {
+				for(Servico s : Main.getListaServicos()) { //COLOCAR CONDICIONAL para limpar a lista e não repetir
 					for(i=0;i<s.getListaTipoServico().size();i++) {
 						enquete = s.getNome().concat(" - " + s.getListaTipoServico().get(i).getNomeTipoServico());
 						comboBox.addItem(enquete);
@@ -166,7 +166,7 @@ public class AdminView extends JFrame {
 		JMenuItem mntmAlterarComponente = new JMenuItem("Alterar componente");
 		mntmAlterarComponente.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				String[] opcoes = new String[]{"Serviço","Tipo de serviço"}; 
+				String[] opcoes = new String[]{"Serviço","Tipo de serviço"}; //Ta dando exception no alterar tipo de serviço, tratar quando não tiver tipo de serviço
 				String componente = (String) JOptionPane.showInputDialog(contentPane,null,"Escolha o componente que deseja alterar",JOptionPane.INFORMATION_MESSAGE,null, opcoes,opcoes[0]);
 				if(componente.equals("Serviço")) {
 					ArrayList<Servico> options = Main.getListaServicos();
@@ -264,10 +264,10 @@ public class AdminView extends JFrame {
 		});
 		mnEnquete.add(mntmExcluirComponente);
 		
-		JMenu mnRelatorio = new JMenu("Relat\u00F3rio");
+		JMenu mnRelatorio = new JMenu("Relat\u00F3rio"); //Não faz nada
 		menuBar.add(mnRelatorio);
 		
-		JMenuItem mntmGerar = new JMenuItem("Gerar relat\u00F3rio");
+		JMenuItem mntmGerar = new JMenuItem("Gerar relat\u00F3rio");	//Não faz nada
 		mntmGerar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				
@@ -275,7 +275,7 @@ public class AdminView extends JFrame {
 		});
 		mnRelatorio.add(mntmGerar);
 		
-		JMenuItem mntmExportar = new JMenuItem("Exportar relat\u00F3rio");
+		JMenuItem mntmExportar = new JMenuItem("Exportar relat\u00F3rio"); //Inserir mensagem de relatorio exportado
 		mntmExportar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				FileWriter arq = null;
@@ -334,7 +334,7 @@ public class AdminView extends JFrame {
 		});
 		mnUsuario.add(mntmAdicionarUsuario);
 		
-		JMenuItem mntmRemoverUsuario = new JMenuItem("Remover usuário");
+		JMenuItem mntmRemoverUsuario = new JMenuItem("Remover usuário"); //Não funciona
 		mntmRemoverUsuario.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				try(BufferedReader br = new BufferedReader(new FileReader("/user.db")))
@@ -369,10 +369,10 @@ public class AdminView extends JFrame {
         String lido = "",servico = "",tiposervico = "";
         while((lido = br.readLine()) != null) {
         	StringTokenizer tokenizer = new StringTokenizer(lido,";");
-        	while(tokenizer.hasMoreTokens())
-        	{
+        	while(tokenizer.hasMoreTokens()) {
         	    servico = tokenizer.nextToken();
         	    tiposervico = tokenizer.nextToken();
+        	    
         	    if(tiposervico.equals("null")) {
         	    	tiposervico = tiposervico.replace("null",tipoadd);
         	    	break;
