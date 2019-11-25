@@ -382,7 +382,7 @@ public class AdminView extends JFrame {
 		            		if(pesquisa.equals(encontrado)) {
 		            			int confirmacao = JOptionPane.showConfirmDialog(null,"Remover usuário '" + pesquisa + "'?",("Tem certeza de que deseja remover o usuário " + pesquisa.toUpperCase() + "?"),JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.ERROR_MESSAGE);
 		            			if(confirmacao == 0) {
-		            				
+		            				rem(pesquisa);
 		            			}
 		            		}
 		            	}
@@ -395,6 +395,44 @@ public class AdminView extends JFrame {
 			}
 		});
 		mnUsuario.add(mntmRemoverUsuario);
+	}
+	
+	public void rem(String usu) {
+		FileReader fl;
+		try {
+			fl = new FileReader("./user.db");
+			BufferedReader br = new BufferedReader(fl);
+			String lido = "",usuario = "",senha = "", permissao = "";
+			ArrayList<Usuario> arr = new ArrayList<Usuario>();
+	        while((lido = br.readLine()) != null) {
+	        	StringTokenizer tokenizer = new StringTokenizer(lido,";");
+	        	while(tokenizer.hasMoreTokens()) {
+	        	    usuario = tokenizer.nextToken();
+	        	    senha = tokenizer.nextToken();
+	        	    permissao = tokenizer.nextToken();
+	        	    Usuario u = new Usuario(usuario, senha, permissao);
+	        	    arr.add(u);
+	        	}
+	        }
+	        br.close();
+	        fl.close();
+	        FileWriter fl1 = new FileWriter("./user.db");
+	        BufferedWriter br1 = new BufferedWriter(fl1);
+	        for(Usuario user: arr) {
+	        	if(!user.getNomeUsuario().equals(usu)) {
+	        		br1.write(user.getNomeUsuario() +";" + user.getSenha()+";" + user.getPermissao());
+	        		br1.newLine();
+	        	}
+	        }
+	        br1.close();
+	        fl1.close();
+	        JOptionPane.showMessageDialog(null, "Excluido com sucesso!","Remover Usuário", JOptionPane.INFORMATION_MESSAGE);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
+		
+		
 	}
 	
 	public void appendTipoServico(String servicoadd,String tipoadd) throws IOException {
