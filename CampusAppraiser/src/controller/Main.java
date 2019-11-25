@@ -104,10 +104,20 @@ public class Main {
             	    tipoServico = tokenizer.nextToken();
             	}
             	TipoServico t = new TipoServico(tipoServico);
-            	ArrayList<TipoServico> arr = new ArrayList<TipoServico>();
-            	arr.add(t);
-            	Servico s = new Servico(nomeServico,arr);
-            	Main.getListaServicos().add(s);
+            	boolean naoAdicionado = true;
+            	for(Servico servico:Main.getListaServicos()) {
+            		if(servico.getNome().equals(nomeServico)) {
+            			Main.procuraListaServicos(nomeServico).getListaTipoServico().add(t);
+            			naoAdicionado = false;
+            			break;
+            		}
+            	}
+            	if(naoAdicionado){
+            		ArrayList<TipoServico> arr = new ArrayList<TipoServico>();
+                	arr.add(t);
+                	Servico s = new Servico(nomeServico,arr);
+            		Main.getListaServicos().add(s);
+            	}
             }
             br.close();
             arq.close();
