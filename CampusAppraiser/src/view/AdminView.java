@@ -275,7 +275,7 @@ public class AdminView extends JFrame {
 		});
 		mnRelatorio.add(mntmGerar);
 		
-		JMenuItem mntmExportar = new JMenuItem("Exportar relat\u00F3rio"); //Inserir mensagem de relatorio exportado
+		JMenuItem mntmExportar = new JMenuItem("Exportar relat\u00F3rio");
 		mntmExportar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				FileWriter arq = null;
@@ -287,6 +287,7 @@ public class AdminView extends JFrame {
 					lista.forEach((avaliacao)->{
 						relatorio.println(""+avaliacao.getServico()+";"+avaliacao.getTipoServico()+";"+avaliacao.getNota()+";"+avaliacao.getOpiniao());
 					});
+					JOptionPane.showMessageDialog(null, "Relatório exportado com sucesso!","Exportar relatório", JOptionPane.INFORMATION_MESSAGE);
 					relatorio.close();
 					arq.close();
 				} catch (IOException e1) {
@@ -334,25 +335,32 @@ public class AdminView extends JFrame {
 		});
 		mnUsuario.add(mntmAdicionarUsuario);
 		
-		JMenuItem mntmRemoverUsuario = new JMenuItem("Remover usuário"); //Não funciona
+		JMenuItem mntmRemoverUsuario = new JMenuItem("Remover usuário");
 		mntmRemoverUsuario.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				try(BufferedReader br = new BufferedReader(new FileReader("/user.db")))
-		        {
+				FileReader arq = null;
+				try {
+					arq = new FileReader("./user.db");
+					BufferedReader br = new BufferedReader(arq);
 					String pesquisa = JOptionPane.showInputDialog(contentPane,"Nome de usuário:","Remover usuário",JOptionPane.INFORMATION_MESSAGE);
 		            String lido = "";
 		            while((lido = br.readLine()) != null) {
 		            	StringTokenizer tokenizer = new StringTokenizer(lido,";");
 		            	while(tokenizer.hasMoreTokens())
 		            	{
-		            		if(pesquisa == tokenizer.nextToken()) {
-		            			int confirmacao = JOptionPane.showConfirmDialog(null,"Remover usuário",("Tem certeza de que deseja remover o usuário " + pesquisa.toUpperCase() + "?"),JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.ERROR_MESSAGE);
+		            		String encontrado = tokenizer.nextToken();
+		            		tokenizer.nextToken();
+		            		tokenizer.nextToken();
+		            		if(pesquisa.equals(encontrado)) {
+		            			int confirmacao = JOptionPane.showConfirmDialog(null,"Remover usuário '" + pesquisa + "'?",("Tem certeza de que deseja remover o usuário " + pesquisa.toUpperCase() + "?"),JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.ERROR_MESSAGE);
 		            			if(confirmacao == 0) {
 		            				//excluir
 		            			}
 		            		}
 		            	}
 		            }
+		            br.close();
+		            arq.close();
 		        } catch (IOException e1) {
 		            e1.printStackTrace();
 		        }
