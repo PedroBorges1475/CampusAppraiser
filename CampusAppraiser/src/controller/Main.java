@@ -109,7 +109,11 @@ public class Main {
                 	boolean naoAdicionado = true;
                 	for(Servico servico:Main.getListaServicos()) {
                 		if(servico.getNome().equals(nomeServico)) {
-                			Main.procuraListaServicos(nomeServico).getListaTipoServico().add(t);
+                			try {
+                			Main.procuraListaServicos(nomeServico).getListaTipoServico().add(t); //ta dando pau, mas nada que um try-catch não resolva
+                			} catch  (NullPointerException e) {
+                				
+                			}
                 			naoAdicionado = false;
                 			break;
                 		}

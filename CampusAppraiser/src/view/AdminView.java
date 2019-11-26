@@ -474,7 +474,7 @@ public class AdminView extends JFrame {
 	        		TipoServico t = s.getListaTipoServico().get(0);
         			if(t.getNomeTipoServico().equals("null")) {
         				t.getNomeTipoServico().replace("null",tipoadd);
-        				br1.write(s.getNome() +";" + tipoadd);//trovar
+        				br1.write(s.getNome() +";" + tipoadd);
 		        		br1.newLine();
 		        		naoAdicionou = false;
         			}else {
@@ -496,9 +496,7 @@ public class AdminView extends JFrame {
 	        if(naoAdicionou) {
 	        	br1.write(servicoadd +";" + tipoadd);
 	        	br1.newLine(); 
-	        }
-	        
-	        
+	        }	        
 	        br1.close();
 	        fl1.close();
 		} catch (IOException e) {
