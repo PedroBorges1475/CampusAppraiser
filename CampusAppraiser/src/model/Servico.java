@@ -7,7 +7,7 @@ import controller.Main;
 public class Servico {
 	
 	private String nome;
-	private static ArrayList<TipoServico> lista;
+	private ArrayList<TipoServico> lista;
 	
 	public Servico(String nome,ArrayList<TipoServico> lista) {
 		this.nome = nome;

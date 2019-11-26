@@ -474,7 +474,7 @@ public class AdminView extends JFrame {
 	        		TipoServico t = s.getListaTipoServico().get(0);
         			if(t.getNomeTipoServico().equals("null")) {
         				t.getNomeTipoServico().replace("null",tipoadd);
-        				br1.write(s.getNome() +";" + t.getNomeTipoServico());
+        				br1.write(s.getNome() +";" + tipoadd);//trovar
 		        		br1.newLine();
 		        		naoAdicionou = false;
         			}else {
