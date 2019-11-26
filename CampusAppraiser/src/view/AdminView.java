@@ -165,8 +165,8 @@ public class AdminView extends JFrame {
 				}
 				String enquete = "";
 				comboBox.removeAllItems();
-				Main.getListaServicos().clear();
-				Main.importaServicos();
+			//	Main.getListaServicos().clear();
+			//	Main.importaServicos();
 				for(Servico s : Main.getListaServicos()) { //COLOCAR CONDICIONAL para limpar a lista e não repetir
 					for(i=0;i<s.getListaTipoServico().size();i++) {
 						enquete = s.getNome().concat(" - " + s.getListaTipoServico().get(i).getNomeTipoServico());
@@ -456,40 +456,49 @@ public class AdminView extends JFrame {
 	        	while(tokenizer.hasMoreTokens()) {
 	        		nomeServico = tokenizer.nextToken();
 	        	    tipoServico = tokenizer.nextToken();
+	        	}
 	        	    TipoServico t = new TipoServico(tipoServico);
 	        	    ArrayList<TipoServico> tipo = new ArrayList<TipoServico>();
 	        	    tipo.add(t);
 	        	    Servico s = new Servico(nomeServico,tipo);
 	        	    arr.add(s);
-	        	}
+	        	
 	        }
 	        br.close();
 	        fl.close();
 	        FileWriter fl1 = new FileWriter("./serv.db");
 	        BufferedWriter br1 = new BufferedWriter(fl1);
+	        boolean naoAdicionou = true;
 	        for(Servico s: arr) {
-	        	boolean appendFeito = false;
 	        	if(s.getNome().equals(servicoadd)) {
-	        		for(TipoServico t : s.getListaTipoServico()) {
-	        			if(t.getNomeTipoServico().equals("null")) {
-	        				t.getNomeTipoServico().replace("null",tipoadd);
-	        				br1.write(s.getNome() +";" + t.getNomeTipoServico());
-			        		br1.newLine();
-			        		appendFeito = true;
-			        		break;
-	        			}
-	        		}
-	        		if(appendFeito == false) {
-		        		br1.write(s.getNome() +";" + tipoadd);
+	        		TipoServico t = s.getListaTipoServico().get(0);
+        			if(t.getNomeTipoServico().equals("null")) {
+        				t.getNomeTipoServico().replace("null",tipoadd);
+        				br1.write(s.getNome() +";" + t.getNomeTipoServico());
 		        		br1.newLine();
-	        		}
+		        		naoAdicionou = false;
+        			}else {
+    	        	    t = s.getListaTipoServico().get(0); 
+            			br1.write(s.getNome() +";" + t.getNomeTipoServico());
+    		        	br1.newLine(); 
+    	        		
+    	        	}
+	        			
 	        	} else {
-	        		for(TipoServico t : s.getListaTipoServico()) {
-	        			br1.write(s.getNome() +";" + t.getNomeTipoServico());
-			        	br1.newLine(); 
-	        		}
+	        		TipoServico t = s.getListaTipoServico().get(0); 
+        			br1.write(s.getNome() +";" + t.getNomeTipoServico());
+		        	br1.newLine(); 
+	        		
 	        	}
 	        }
+	        
+	        
+	        if(naoAdicionou) {
+	        	br1.write(servicoadd +";" + tipoadd);
+	        	br1.newLine(); 
+	        }
+	        
+	        
 	        br1.close();
 	        fl1.close();
 		} catch (IOException e) {
