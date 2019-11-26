@@ -34,6 +34,10 @@ import javax.swing.JMenuBar;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.awt.event.ContainerAdapter;
+import java.awt.event.ContainerEvent;
 
 public class AdminView extends JFrame {
 
@@ -75,7 +79,30 @@ public class AdminView extends JFrame {
 		contentPane.add(lblEnquetesAbertas);
 		
 		JComboBox<String> comboBox = new JComboBox<String>();
+		comboBox.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent arg0) {
+				ArrayList<Servico> options = Main.getListaServicos();
+				String[] opcoes = new String[Main.getListaServicos().size()];
+				int i = 0;
+				for(Servico s : options) {
+					opcoes[i] = s.getNome();
+					i++;
+				}
+				String enquete = "";
+				comboBox.removeAllItems();
+			//	Main.getListaServicos().clear();
+			//	Main.importaServicos();
+				for(Servico s : Main.getListaServicos()) { //COLOCAR CONDICIONAL para limpar a lista e não repetir
+					for(i=0;i<s.getListaTipoServico().size();i++) {
+						enquete = s.getNome().concat(" - " + s.getListaTipoServico().get(i).getNomeTipoServico());
+						comboBox.addItem(enquete);
+					}
+				}
+			}
+		});
 		comboBox.setBounds(157, 11, 267, 24);
+		
 		contentPane.add(comboBox);
 		
 		JButton btnVotar = new JButton("Votar");
