@@ -165,6 +165,8 @@ public class AdminView extends JFrame {
 				}
 				String enquete = "";
 				comboBox.removeAllItems();
+				Main.getListaServicos().clear();
+				Main.importaServicos();
 				for(Servico s : Main.getListaServicos()) { //COLOCAR CONDICIONAL para limpar a lista e não repetir
 					for(i=0;i<s.getListaTipoServico().size();i++) {
 						enquete = s.getNome().concat(" - " + s.getListaTipoServico().get(i).getNomeTipoServico());
@@ -443,36 +445,55 @@ public class AdminView extends JFrame {
 	}
 	
 	public void appendTipoServico(String servicoadd,String tipoadd) throws IOException {
-		File arquivo = new File("./serv.db");
-		FileReader arq = new FileReader(arquivo);
-	    BufferedReader br = new BufferedReader(arq);
-        String lido = "",servico = "",tiposervico = "";
-        while((lido = br.readLine()) != null) {
-        	StringTokenizer tokenizer = new StringTokenizer(lido,";");
-        	while(tokenizer.hasMoreTokens()) {
-        	    servico = tokenizer.nextToken();
-        	    tiposervico = tokenizer.nextToken();
-        	    if(servico.equals(servicoadd) && tiposervico.equals("null")) {
-        	    	tiposervico = tiposervico.replace("null",tipoadd);
-//        	    	int i=0;
-//        	    	for(Servico s : Main.getListaServicos()) {
-//        	    		if(s.getListaTipoServico().get(i).getNomeTipoServico().equals("null")) {
-//        	    			Main.getListaServicos().remove(Main.procuraListaServicos(servicoadd));
-//        	    		}
-//        	    		i++;
-//        	    	}
-        	    	break;
-        	    } else if(servico.equals(servicoadd) && !tiposervico.equals("null")) {
-        			FileWriter arq1 = new FileWriter(arquivo,true);
-        		    BufferedWriter br1 = new BufferedWriter(arq1);
-        		    br1.write(servicoadd + ";" + tipoadd);
-        	        br1.close();
-        	        arq1.close();
-        	        break;
-        	    }
-        	}
-        }
-        br.close();
-        arq.close();
+		FileReader fl;
+		try {
+			fl = new FileReader("./serv.db");
+			BufferedReader br = new BufferedReader(fl);
+			String lido = "",nomeServico = "",tipoServico = "";
+			ArrayList<Servico> arr = new ArrayList<Servico>();
+	        while((lido = br.readLine()) != null) {
+	        	StringTokenizer tokenizer = new StringTokenizer(lido,";");
+	        	while(tokenizer.hasMoreTokens()) {
+	        		nomeServico = tokenizer.nextToken();
+	        	    tipoServico = tokenizer.nextToken();
+	        	    TipoServico t = new TipoServico(tipoServico);
+	        	    ArrayList<TipoServico> tipo = new ArrayList<TipoServico>();
+	        	    tipo.add(t);
+	        	    Servico s = new Servico(nomeServico,tipo);
+	        	    arr.add(s);
+	        	}
+	        }
+	        br.close();
+	        fl.close();
+	        FileWriter fl1 = new FileWriter("./serv.db");
+	        BufferedWriter br1 = new BufferedWriter(fl1);
+	        for(Servico s: arr) {
+	        	boolean appendFeito = false;
+	        	if(s.getNome().equals(servicoadd)) {
+	        		for(TipoServico t : s.getListaTipoServico()) {
+	        			if(t.getNomeTipoServico().equals("null")) {
+	        				t.getNomeTipoServico().replace("null",tipoadd);
+	        				br1.write(s.getNome() +";" + t.getNomeTipoServico());
+			        		br1.newLine();
+			        		appendFeito = true;
+			        		break;
+	        			}
+	        		}
+	        		if(appendFeito == false) {
+		        		br1.write(s.getNome() +";" + tipoadd);
+		        		br1.newLine();
+	        		}
+	        	} else {
+	        		for(TipoServico t : s.getListaTipoServico()) {
+	        			br1.write(s.getNome() +";" + t.getNomeTipoServico());
+			        	br1.newLine(); 
+	        		}
+	        	}
+	        }
+	        br1.close();
+	        fl1.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 }

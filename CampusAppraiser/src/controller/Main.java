@@ -114,7 +114,7 @@ public class Main {
                 			break;
                 		}
                 	}
-                	if(naoAdicionado){
+                	if(naoAdicionado) {
                 		ArrayList<TipoServico> arr = new ArrayList<TipoServico>();
                     	arr.add(t);
                     	Servico s = new Servico(nomeServico,arr);
