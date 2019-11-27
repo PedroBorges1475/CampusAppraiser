@@ -1,15 +1,18 @@
 package view;
 
 import java.awt.EventQueue;
+
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
+import java.util.StringTokenizer;
 
 import javax.swing.ButtonGroup;
 import javax.swing.JButton;
@@ -28,7 +31,8 @@ import model.Avaliacao;
 import model.Resultados;
 import model.Servico;
 import model.TipoServico;
-
+import controller.Main;
+ 
 public class AvaliadorView extends JFrame {
 
 	private JPanel contentPane;
@@ -139,9 +143,9 @@ public class AvaliadorView extends JFrame {
 		contentPane.add(lblTipoDeServico);
 		
 		txtOpiniao = new JTextField();
-		txtOpiniao.setText("Digite aqui sua opini\u00E3o...");
+		txtOpiniao.setToolTipText("Digite aqui sua opini\u00E3o...");
 		txtOpiniao.setHorizontalAlignment(SwingConstants.LEFT);
-		txtOpiniao.setBounds(10, 132, 414, 84);
+		txtOpiniao.setBounds(10, 154, 414, 62);
 		contentPane.add(txtOpiniao);
 		txtOpiniao.setColumns(10);
 		
@@ -154,7 +158,9 @@ public class AvaliadorView extends JFrame {
 		btnSalvar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				String servico = comboBoxServico.getSelectedItem().toString();
+				System.out.print("Servico");
 				String tipoServico = comboBoxTipoServico.getSelectedItem().toString();
+				System.out.print("\nTIPOServico");
 				String nota = "";
 				if(rdbtnNota0.isSelected()) {
 					nota = "0";
@@ -175,6 +181,7 @@ public class AvaliadorView extends JFrame {
 					nota = "5";
 				}
 				String opiniao = txtOpiniao.getText();
+				System.out.print("\nOpiniao");
 				Avaliacao avaliacao = new Avaliacao(servico,tipoServico,nota,opiniao);
 				Resultados.adicionarVoto(avaliacao);
 				addAvaliacao();
@@ -184,10 +191,14 @@ public class AvaliadorView extends JFrame {
 		});
 		btnSalvar.setBounds(335, 227, 89, 23);
 		contentPane.add(btnSalvar);
+		
+		JLabel lblDigiteAquiSua = new JLabel("Digite aqui sua opini\u00E3o...");
+		lblDigiteAquiSua.setBounds(10, 132, 154, 14);
+		contentPane.add(lblDigiteAquiSua);
 	}
 	
 	public void clear() {
-		txtOpiniao.setText("Digite aqui sua opini\u00E3o...");
+		txtOpiniao.setText("");
 		buttonGroup.clearSelection();
 		comboBoxServico.setSelectedItem(null);
 		comboBoxTipoServico.setSelectedItem(null);
@@ -195,8 +206,10 @@ public class AvaliadorView extends JFrame {
 	
 	private void addAvaliacao() {
 		FileWriter arq = null;
+		
 		try {
-			arq = new FileWriter("./result.db",true);
+			File fl = new File("./result.db");
+			arq = new FileWriter(fl);
 			PrintWriter db = new PrintWriter(arq);
 		    db.println("servico;tiposervico;nota;opiniao");
 		    ArrayList<Avaliacao> lista = Resultados.getListaResultados();
@@ -212,7 +225,8 @@ public class AvaliadorView extends JFrame {
 	
 	public void votarEnquete(String servico,String tiposervico) {
 		comboBoxServico.setSelectedItem(servico);
+		
 		comboBoxTipoServico.setSelectedItem(tiposervico);
 	}
-
+	
 }

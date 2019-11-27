@@ -18,6 +18,7 @@ import view.AdminView;
 import view.AvaliadorView;
 import view.GerenteView;
 import view.LoginView;
+import view.RelatorioView;
 
 public class Main {
 	
@@ -25,6 +26,7 @@ public class Main {
 	private static AdminView adminView = new AdminView();
 	private static AvaliadorView avaliadorView = new AvaliadorView();
 	private static GerenteView gerenteView = new GerenteView();
+	private static RelatorioView relatorioView = new RelatorioView();
 	private static ArrayList<Servico> listaServicos = new ArrayList<Servico>();
 	private static ArrayList<Usuario> listaUsuarios = new ArrayList<Usuario>();
 	public static boolean flagVoto = false;
@@ -61,6 +63,15 @@ public class Main {
 			avaliadorView.clear();
 		}
 		gerenteView.setVisible(true);
+	}
+	
+	public static void callRelatorioView(String Servico, boolean visible) {
+		if(visible) {
+		relatorioView.setVisible(true);
+		} else {
+		relatorioView.setVisible(false); 
+		}
+		
 	}
 	
 	public static ArrayList<Servico> getListaServicos() {

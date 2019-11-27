@@ -36,8 +36,6 @@ import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.awt.event.ContainerAdapter;
-import java.awt.event.ContainerEvent;
 
 public class AdminView extends JFrame {
 
@@ -191,10 +189,8 @@ public class AdminView extends JFrame {
 					}
 				}
 				String enquete = "";
-				comboBox.removeAllItems();
-			//	Main.getListaServicos().clear();
-			//	Main.importaServicos();
-				for(Servico s : Main.getListaServicos()) { //COLOCAR CONDICIONAL para limpar a lista e não repetir
+				comboBox.removeAllItems();			//Limpa o comboBox para preencher de novo com valores atualizados
+				for(Servico s : Main.getListaServicos()) {
 					for(i=0;i<s.getListaTipoServico().size();i++) {
 						enquete = s.getNome().concat(" - " + s.getListaTipoServico().get(i).getNomeTipoServico());
 						comboBox.addItem(enquete);
@@ -224,6 +220,7 @@ public class AdminView extends JFrame {
 							Main.procuraListaServicos(servico).setNome(nome);
 							JOptionPane.showMessageDialog(null, "Componente alterado com sucesso!","Alterar componente", JOptionPane.INFORMATION_MESSAGE);
 							String enquete = "";
+							comboBox.removeAllItems();			//Limpa o comboBox para preencher de novo com valores atualizados
 							for(Servico s : Main.getListaServicos()) {
 								for(i=0;i<s.getListaTipoServico().size();i++) {
 									enquete = s.getNome().concat(" - " + s.getListaTipoServico().get(i).getNomeTipoServico());
@@ -261,6 +258,7 @@ public class AdminView extends JFrame {
 								Main.procuraListaServicos(servico).procuraListaTipoServico(tiposervico).setNomeTipoServico(nome);
 								JOptionPane.showMessageDialog(null, "Componente alterado com sucesso!","Alterar componente", JOptionPane.INFORMATION_MESSAGE);
 								String enquete = "";
+								comboBox.removeAllItems();			//Limpa o comboBox para preencher de novo com valores atualizados
 								for(Servico s : Main.getListaServicos()) {
 									for(i=0;i<s.getListaTipoServico().size();i++) {
 										enquete = s.getNome().concat(" - " + s.getListaTipoServico().get(i).getNomeTipoServico());
@@ -331,12 +329,21 @@ public class AdminView extends JFrame {
 		});
 		mnEnquete.add(mntmExcluirComponente);
 		
-		JMenu mnRelatorio = new JMenu("Relat\u00F3rio"); //Não faz nada
+		JMenu mnRelatorio = new JMenu("Relat\u00F3rio");
 		menuBar.add(mnRelatorio);
 		
-		JMenuItem mntmGerar = new JMenuItem("Gerar relat\u00F3rio");	//Não faz nada
+		JMenuItem mntmGerar = new JMenuItem("Gerar relat\u00F3rio");
 		mntmGerar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				ArrayList<Servico> options = Main.getListaServicos();
+				String[] op = new String[Main.getListaServicos().size()];
+				int i = 0;
+				for(Servico s : options) {
+					op[i] = s.getNome();
+					i++;
+				}
+				String servico = (String) JOptionPane.showInputDialog(contentPane,null,"Escolha o serviço",JOptionPane.INFORMATION_MESSAGE,null, op,op[0]);
+				Main.callRelatorioView(servico,true); 
 				
 			}
 		});
