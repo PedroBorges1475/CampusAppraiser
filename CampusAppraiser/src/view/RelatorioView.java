@@ -31,6 +31,7 @@ public class RelatorioView extends JFrame {
 
 	private JPanel contentPane;
 	private JTable table;
+	private JButton btnAtualizar;
 	
 
 	/**
@@ -161,7 +162,7 @@ public class RelatorioView extends JFrame {
 		
 		
 		
-		JButton btnOk = new JButton("OK");
+		JButton btnOk = new JButton("Fechar");
 		btnOk.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				RelatorioView.super.setVisible(false);
@@ -169,5 +170,49 @@ public class RelatorioView extends JFrame {
 		});
 		btnOk.setBounds(335, 227, 89, 23);
 		contentPane.add(btnOk);
+		
+		btnAtualizar = new JButton("Atualizar");
+		btnAtualizar.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				
+				FileReader fl;
+				
+				try {
+					fl = new FileReader("./result.db");
+					BufferedReader br = new BufferedReader(fl);
+					String lido = "", nomeServico = "",tipoServico = "", nota = "", opiniao ="";
+					Avaliacao av;
+					ArrayList<Avaliacao> avaliacao = new ArrayList<Avaliacao>();
+					while((lido = br.readLine()) != null) {
+						StringTokenizer tokenizer = new StringTokenizer(lido,";");
+						while(tokenizer.hasMoreTokens()) {
+			        		nomeServico = tokenizer.nextToken();
+			        	    tipoServico = tokenizer.nextToken();
+			        		nota = tokenizer.nextToken();
+			        	    opiniao = tokenizer.nextToken();
+			        	    av = new Avaliacao(nomeServico, tipoServico, nota, opiniao);
+							avaliacao.add(av);
+			        	}
+						
+					}
+					AvaliacaoTableModel atm = new AvaliacaoTableModel(avaliacao);
+					table = new JTable();
+					table.setBounds(10, 11, 414, 206);
+					contentPane.add(table);		
+					table.setModel(atm);
+					
+					br.close();
+					
+				} catch (FileNotFoundException e1) {
+					e1.printStackTrace();
+				} catch (IOException e1) {
+					e1.printStackTrace();
+				}
+				
+				
+			}
+		});
+		btnAtualizar.setBounds(236, 228, 89, 23);
+		contentPane.add(btnAtualizar);
 	}
 }

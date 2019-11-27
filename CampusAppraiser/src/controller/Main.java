@@ -41,7 +41,6 @@ public class Main {
 	public static void callAdminFrame() {
 		if(flagVoto) {
 			avaliadorView.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-
 			avaliadorView.clear();
 		}
 		adminView.setVisible(true);
@@ -66,6 +65,7 @@ public class Main {
 	}
 	
 	public static void callRelatorioView(boolean visible) {
+		
 		if(visible) {
 		relatorioView.setVisible(true);
 		} else {
