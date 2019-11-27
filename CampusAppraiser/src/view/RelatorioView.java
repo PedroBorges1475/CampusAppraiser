@@ -15,6 +15,7 @@ import javax.swing.JButton;
 import java.awt.event.ActionListener;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
+import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -46,6 +47,7 @@ public class RelatorioView extends JFrame {
 
 	/**
 	 * Create the frame.
+	 * @throws IOException 
 	 */
 	public RelatorioView() {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -58,6 +60,32 @@ public class RelatorioView extends JFrame {
 		table = new JTable();
 		table.setBounds(10, 11, 414, 206);
 		contentPane.add(table);
+		
+		FileReader fl;
+		
+		try {
+			fl = new FileReader("./result.db");
+			BufferedReader br = new BufferedReader(fl); //servico;tiposervico;nota;opiniao
+			String lido = "", nomeServico = "",tipoServico = "", nota = "", opiniao ="";
+			String [] colunas = {"servico","tiposervico","nota","opiniao"};
+			
+			while((lido = br.readLine()) != null) {
+				StringTokenizer tokenizer = new StringTokenizer(lido,";");
+	        	while(tokenizer.hasMoreTokens()) {
+	        		nomeServico = tokenizer.nextToken();
+	        	    tipoServico = tokenizer.nextToken();
+	        		nota = tokenizer.nextToken();
+	        	    opiniao = tokenizer.nextToken();
+	        	}
+				
+			}
+			
+			
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 		
 		//Exemplo pra rodar e preencher a tabela
 		
