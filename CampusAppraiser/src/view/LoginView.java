@@ -81,13 +81,13 @@ public class LoginView extends JFrame {
 							dispose();
 							switch(Main.getListaUsuarios().get(i).getPermissao()) {
 								case "AV":
-									Main.callAvaliadorFrame(null,null);
+									Main.callAvaliadorFrame();
 									break;
 								case "GER":
-									Main.callGerenteFrame(null,null);
+									Main.callGerenteFrame();
 									break;
 								case "ADM":
-									Main.callAdminFrame(null,null);
+									Main.callAdminFrame();
 									break;
 							}
 							break;

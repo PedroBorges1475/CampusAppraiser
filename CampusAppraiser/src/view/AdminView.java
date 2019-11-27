@@ -71,54 +71,42 @@ public class AdminView extends JFrame {
 		setContentPane(contentPane);
 		contentPane.setLayout(null);
 		
-		JLabel lblEnquetesAbertas = new JLabel("Enquetes abertas:");
-		lblEnquetesAbertas.setBounds(10, 0, 143, 42);
-		lblEnquetesAbertas.setFont(new Font("Impact", Font.PLAIN, 20));
-		contentPane.add(lblEnquetesAbertas);
-		
-		JComboBox<String> comboBox = new JComboBox<String>();
-		comboBox.addMouseListener(new MouseAdapter() {
-			@Override
-			public void mouseClicked(MouseEvent arg0) {
-				ArrayList<Servico> options = Main.getListaServicos();
-				String[] opcoes = new String[Main.getListaServicos().size()];
-				int i = 0;
-				for(Servico s : options) {
-					opcoes[i] = s.getNome();
-					i++;
-				}
-				String enquete = "";
-				comboBox.removeAllItems();
-			//	Main.getListaServicos().clear();
-			//	Main.importaServicos();
-				for(Servico s : Main.getListaServicos()) { //COLOCAR CONDICIONAL para limpar a lista e não repetir
-					for(i=0;i<s.getListaTipoServico().size();i++) {
-						enquete = s.getNome().concat(" - " + s.getListaTipoServico().get(i).getNomeTipoServico());
-						comboBox.addItem(enquete);
-					}
-				}
-			}
-		});
-		comboBox.setBounds(157, 11, 267, 24);
-		
-		contentPane.add(comboBox);
+		//JComboBox<String> comboBox = new JComboBox<String>();
+//		comboBox.addMouseListener(new MouseAdapter() {
+//			@Override
+//			public void mouseClicked(MouseEvent arg0) {
+//				ArrayList<Servico> options = Main.getListaServicos();
+//				String[] opcoes = new String[Main.getListaServicos().size()];
+//				int i = 0;
+//				for(Servico s : options) {
+//					opcoes[i] = s.getNome();
+//					i++;
+//				}
+//				String enquete = "";
+//				comboBox.removeAllItems();
+//			//	Main.getListaServicos().clear();
+//			//	Main.importaServicos();
+//				for(Servico s : Main.getListaServicos()) { //COLOCAR CONDICIONAL para limpar a lista e não repetir
+//					for(i=0;i<s.getListaTipoServico().size();i++) {
+//						enquete = s.getNome().concat(" - " + s.getListaTipoServico().get(i).getNomeTipoServico());
+//						comboBox.addItem(enquete);
+//					}
+//				}
+//			}
+//		});
+//		comboBox.setBounds(157, 11, 267, 24);
+//		
+//		contentPane.add(comboBox);
 		
 		JButton btnVotar = new JButton("Votar");
 		btnVotar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				String nomeServico = "",tipoServico = "";
-		        StringTokenizer tokenizer = new StringTokenizer(comboBox.getSelectedItem().toString()," - ");
-		        while(tokenizer.hasMoreTokens())
-		        {
-		        	nomeServico = tokenizer.nextToken();
-		            tipoServico = tokenizer.nextToken();
-		        }
 				Main.flagVoto = true;
-		        Main.callAvaliadorFrame(nomeServico,tipoServico);
+		        Main.callAvaliadorFrame();
 		        Main.flagVoto = false;
 			}
 		});
-		btnVotar.setBounds(335, 46, 89, 23);
+		btnVotar.setBounds(180, 11, 89, 23);
 		contentPane.add(btnVotar);
 		
 		JMenuBar menuBar = new JMenuBar();
@@ -189,11 +177,11 @@ public class AdminView extends JFrame {
 					}
 				}
 				String enquete = "";
-				comboBox.removeAllItems();			//Limpa o comboBox para preencher de novo com valores atualizados
+				//comboBox.removeAllItems();			//Limpa o comboBox para preencher de novo com valores atualizados
 				for(Servico s : Main.getListaServicos()) {
 					for(i=0;i<s.getListaTipoServico().size();i++) {
 						enquete = s.getNome().concat(" - " + s.getListaTipoServico().get(i).getNomeTipoServico());
-						comboBox.addItem(enquete);
+						//comboBox.addItem(enquete);
 					}
 				}
 			}
@@ -220,11 +208,11 @@ public class AdminView extends JFrame {
 							Main.procuraListaServicos(servico).setNome(nome);
 							JOptionPane.showMessageDialog(null, "Componente alterado com sucesso!","Alterar componente", JOptionPane.INFORMATION_MESSAGE);
 							String enquete = "";
-							comboBox.removeAllItems();			//Limpa o comboBox para preencher de novo com valores atualizados
+							//comboBox.removeAllItems();			//Limpa o comboBox para preencher de novo com valores atualizados
 							for(Servico s : Main.getListaServicos()) {
 								for(i=0;i<s.getListaTipoServico().size();i++) {
 									enquete = s.getNome().concat(" - " + s.getListaTipoServico().get(i).getNomeTipoServico());
-									comboBox.addItem(enquete);
+								//	comboBox.addItem(enquete);
 								}
 							}
 						}
@@ -258,11 +246,11 @@ public class AdminView extends JFrame {
 								Main.procuraListaServicos(servico).procuraListaTipoServico(tiposervico).setNomeTipoServico(nome);
 								JOptionPane.showMessageDialog(null, "Componente alterado com sucesso!","Alterar componente", JOptionPane.INFORMATION_MESSAGE);
 								String enquete = "";
-								comboBox.removeAllItems();			//Limpa o comboBox para preencher de novo com valores atualizados
+							//	comboBox.removeAllItems();			//Limpa o comboBox para preencher de novo com valores atualizados
 								for(Servico s : Main.getListaServicos()) {
 									for(i=0;i<s.getListaTipoServico().size();i++) {
 										enquete = s.getNome().concat(" - " + s.getListaTipoServico().get(i).getNomeTipoServico());
-										comboBox.addItem(enquete);
+									//	comboBox.addItem(enquete);
 									}
 								}
 							}
@@ -298,7 +286,7 @@ public class AdminView extends JFrame {
 					for(Servico s : Main.getListaServicos()) {
 						for(i=0;i<s.getListaTipoServico().size();i++) {
 							enquete = s.getNome().concat(" - " + s.getListaTipoServico().get(i).getNomeTipoServico());
-							comboBox.addItem(enquete);
+						//	comboBox.addItem(enquete);
 						}
 					}
 				}
@@ -321,7 +309,7 @@ public class AdminView extends JFrame {
 					for(Servico s : Main.getListaServicos()) {
 						for(i=0;i<s.getListaTipoServico().size();i++) {
 							enquete = s.getNome().concat(" - " + s.getListaTipoServico().get(i).getNomeTipoServico());
-							comboBox.addItem(enquete);
+						//	comboBox.addItem(enquete);
 						}
 					}
 				}

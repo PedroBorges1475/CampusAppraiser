@@ -38,28 +38,28 @@ public class Main {
 		loginView.setVisible(true);
 	}
 	
-	public static void callAdminFrame(String votarservico,String votartipo) {
+	public static void callAdminFrame() {
 		if(flagVoto) {
 			avaliadorView.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-			avaliadorView.votarEnquete(votarservico,votartipo);
+
 			avaliadorView.clear();
 		}
 		adminView.setVisible(true);
 	}
 	
-	public static void callAvaliadorFrame(String votarservico,String votartipo) {
+	public static void callAvaliadorFrame() {
 		if(flagVoto) {
 			avaliadorView.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-			avaliadorView.votarEnquete(votarservico,votartipo);
+
 			avaliadorView.clear();
 		}
 		avaliadorView.setVisible(true);
 	}
 	
-	public static void callGerenteFrame(String votarservico,String votartipo) {
+	public static void callGerenteFrame() {
 		if(flagVoto) {
 			avaliadorView.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-			avaliadorView.votarEnquete(votarservico,votartipo);
+
 			avaliadorView.clear();
 		}
 		gerenteView.setVisible(true);

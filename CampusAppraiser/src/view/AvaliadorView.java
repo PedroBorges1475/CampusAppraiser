@@ -81,19 +81,25 @@ public class AvaliadorView extends JFrame {
 		btnLimpar.setBounds(236, 227, 89, 23);
 		contentPane.add(btnLimpar);
 		
+		
+		
+		
 		comboBoxServico = new JComboBox<String>();
-		comboBoxServico.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent arg0) {
-				//comboBoxServico.removeAllItems();
+		comboBoxServico.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				comboBoxServico.removeAllItems();
 				for(Servico s : Main.getListaServicos()) {
 					comboBoxServico.addItem(s.getNome());
-				}
+				} 
 			}
 		});
+		
 		comboBoxServico.setEditable(false);
 		comboBoxServico.setBounds(124, 11, 300, 20);
 		contentPane.add(comboBoxServico);
 		
+
 		comboBoxTipoServico = new JComboBox<String>();
 		comboBoxTipoServico.addMouseListener(new MouseAdapter() {
 			public void mouseClicked(MouseEvent arg0) {
@@ -109,20 +115,7 @@ public class AvaliadorView extends JFrame {
 					}
 			}
 		});
-		comboBoxTipoServico.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent arg0) {
-				try {
-				//comboBoxTipoServico.removeAllItems();
-				String servico = comboBoxServico.getSelectedItem().toString();
-				for(TipoServico t : Main.procuraListaServicos(servico).getListaTipoServico()) {
-					comboBoxTipoServico.addItem(t.getNomeTipoServico());
-				}
-				} catch (NullPointerException e ) {
-					
-				}
-				
-			}
-		});
+
 		comboBoxTipoServico.setEditable(false);
 		comboBoxTipoServico.setBounds(124, 42, 300, 20);
 		contentPane.add(comboBoxTipoServico);
@@ -243,10 +236,5 @@ public class AvaliadorView extends JFrame {
 		}
 	}
 	
-	public void votarEnquete(String servico,String tiposervico) {
-		comboBoxServico.setSelectedItem(servico);
-		
-		comboBoxTipoServico.setSelectedItem(tiposervico);
-	}
 	
 }

@@ -83,7 +83,7 @@ public class GerenteView extends JFrame {
 		            tipoServico = tokenizer.nextToken();
 		        }
 				Main.flagVoto = true;
-		        Main.callAvaliadorFrame(nomeServico,tipoServico);
+		        Main.callAvaliadorFrame();
 		        Main.flagVoto = false;
 			}
 		});
