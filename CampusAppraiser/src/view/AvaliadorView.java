@@ -62,11 +62,13 @@ public class AvaliadorView extends JFrame {
 	 * Create the frame.
 	 */
 	public AvaliadorView() {
+		
 		setTitle("Avaliar servi\u00E7o");
 		setResizable(false);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setIconImage(Toolkit.getDefaultToolkit().getImage(LoginView.class.getResource("/icone.png")));
 		setBounds(100, 100, 450, 300);
+		setLocationRelativeTo(null);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);

@@ -53,11 +53,13 @@ public class GerenteView extends JFrame {
 	 * Create the frame.
 	 */
 	public GerenteView() {
+		
 		setResizable(false);
 		setTitle("Gerente de Vota\u00E7\u00E3o - Campus Appraiser");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setIconImage(Toolkit.getDefaultToolkit().getImage(LoginView.class.getResource("/icone.png")));
 		setBounds(100, 100, 450, 300);
+		setLocationRelativeTo(null);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
