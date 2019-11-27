@@ -6,7 +6,10 @@ import java.awt.EventQueue;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
+import javax.swing.table.DefaultTableModel;
 
+import model.Avaliacao;
+import model.AvaliacaoTableModel;
 import model.Servico;
 import model.TipoServico;
 
@@ -22,6 +25,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.StringTokenizer;
 import java.awt.event.ActionEvent;
+import java.awt.ScrollPane;
 
 public class RelatorioView extends JFrame {
 
@@ -57,29 +61,34 @@ public class RelatorioView extends JFrame {
 		setContentPane(contentPane);
 		contentPane.setLayout(null);
 		
-		table = new JTable();
-		table.setBounds(10, 11, 414, 206);
-		contentPane.add(table);
 		
 		FileReader fl;
 		
 		try {
 			fl = new FileReader("./result.db");
-			BufferedReader br = new BufferedReader(fl); //servico;tiposervico;nota;opiniao
+			BufferedReader br = new BufferedReader(fl);
 			String lido = "", nomeServico = "",tipoServico = "", nota = "", opiniao ="";
-			String [] colunas = {"servico","tiposervico","nota","opiniao"};
-			
+			Avaliacao av;
+			ArrayList<Avaliacao> avaliacao = new ArrayList<Avaliacao>();
 			while((lido = br.readLine()) != null) {
 				StringTokenizer tokenizer = new StringTokenizer(lido,";");
-	        	while(tokenizer.hasMoreTokens()) {
+				while(tokenizer.hasMoreTokens()) {
 	        		nomeServico = tokenizer.nextToken();
 	        	    tipoServico = tokenizer.nextToken();
 	        		nota = tokenizer.nextToken();
 	        	    opiniao = tokenizer.nextToken();
+	        	    av = new Avaliacao(nomeServico, tipoServico, nota, opiniao);
+					avaliacao.add(av);
 	        	}
 				
 			}
+			AvaliacaoTableModel atm = new AvaliacaoTableModel(avaliacao);
+			table = new JTable();
+			table.setBounds(10, 11, 414, 206);
+			contentPane.add(table);		
+			table.setModel(atm);
 			
+			br.close();
 			
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();

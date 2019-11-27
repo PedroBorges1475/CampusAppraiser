@@ -335,15 +335,7 @@ public class AdminView extends JFrame {
 		JMenuItem mntmGerar = new JMenuItem("Gerar relat\u00F3rio");
 		mntmGerar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				ArrayList<Servico> options = Main.getListaServicos();
-				String[] op = new String[Main.getListaServicos().size()];
-				int i = 0;
-				for(Servico s : options) {
-					op[i] = s.getNome();
-					i++;
-				}
-				String servico = (String) JOptionPane.showInputDialog(contentPane,null,"Escolha o serviço",JOptionPane.INFORMATION_MESSAGE,null, op,op[0]);
-				Main.callRelatorioView(servico,true); 
+				Main.callRelatorioView(true); 
 				
 			}
 		});

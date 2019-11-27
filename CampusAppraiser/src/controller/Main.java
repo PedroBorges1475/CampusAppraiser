@@ -65,7 +65,7 @@ public class Main {
 		gerenteView.setVisible(true);
 	}
 	
-	public static void callRelatorioView(String Servico, boolean visible) {
+	public static void callRelatorioView(boolean visible) {
 		if(visible) {
 		relatorioView.setVisible(true);
 		} else {

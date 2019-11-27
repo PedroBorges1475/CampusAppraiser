@@ -32,6 +32,8 @@ import model.Resultados;
 import model.Servico;
 import model.TipoServico;
 import controller.Main;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
  
 public class AvaliadorView extends JFrame {
 
@@ -82,6 +84,7 @@ public class AvaliadorView extends JFrame {
 		comboBoxServico = new JComboBox<String>();
 		comboBoxServico.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
+				//comboBoxServico.removeAllItems();
 				for(Servico s : Main.getListaServicos()) {
 					comboBoxServico.addItem(s.getNome());
 				}
@@ -92,12 +95,32 @@ public class AvaliadorView extends JFrame {
 		contentPane.add(comboBoxServico);
 		
 		comboBoxTipoServico = new JComboBox<String>();
+		comboBoxTipoServico.addMouseListener(new MouseAdapter() {
+			public void mouseClicked(MouseEvent arg0) {
+				try {
+					//comboBoxTipoServico.removeAllItems();
+					String servico = comboBoxServico.getSelectedItem().toString();
+					comboBoxTipoServico.removeAllItems();
+					for(TipoServico t : Main.procuraListaServicos(servico).getListaTipoServico()) {
+						comboBoxTipoServico.addItem(t.getNomeTipoServico());
+					}
+					} catch (NullPointerException e ) {
+						
+					}
+			}
+		});
 		comboBoxTipoServico.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
+				try {
+				//comboBoxTipoServico.removeAllItems();
 				String servico = comboBoxServico.getSelectedItem().toString();
 				for(TipoServico t : Main.procuraListaServicos(servico).getListaTipoServico()) {
 					comboBoxTipoServico.addItem(t.getNomeTipoServico());
 				}
+				} catch (NullPointerException e ) {
+					
+				}
+				
 			}
 		});
 		comboBoxTipoServico.setEditable(false);
@@ -158,9 +181,7 @@ public class AvaliadorView extends JFrame {
 		btnSalvar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				String servico = comboBoxServico.getSelectedItem().toString();
-				System.out.print("Servico");
 				String tipoServico = comboBoxTipoServico.getSelectedItem().toString();
-				System.out.print("\nTIPOServico");
 				String nota = "";
 				if(rdbtnNota0.isSelected()) {
 					nota = "0";
@@ -181,7 +202,6 @@ public class AvaliadorView extends JFrame {
 					nota = "5";
 				}
 				String opiniao = txtOpiniao.getText();
-				System.out.print("\nOpiniao");
 				Avaliacao avaliacao = new Avaliacao(servico,tipoServico,nota,opiniao);
 				Resultados.adicionarVoto(avaliacao);
 				addAvaliacao();
